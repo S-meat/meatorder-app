@@ -469,9 +469,23 @@ input[type=date].inp{font-size:16px;padding:11px 13px}
     opacity: .85;
   }
 }
+
+/* ===== UI/UX 改善（2026-10） ===== */
+.demo-bar{background:#fef3c7;color:#92400e;border-bottom:1px solid #fbbf24;font-size:12px;font-weight:700;text-align:center;padding:7px 12px;line-height:1.5}
+@media (max-width:767px){
+  .inp,.free-inp,textarea.inp,input[type=date].inp{font-size:16px}
+  .inp::placeholder{font-size:14px}
+  .qb,.db{width:32px;height:32px;font-size:16px}
+  .q-inp{width:54px;height:32px;font-size:16px}
+  .u-sel{height:32px;font-size:16px;padding:0 4px}
+  .sic{gap:4px}
+  .sitem{padding:9px 10px}
+  .sin{font-size:13px;line-height:1.3}
+}
 </style>
 </head>
 <body>
+<div class="demo-bar" id="demo-bar" style="display:none">デモ版です：送信しても実際の発注は届きません</div>
 
 <div class="hdr">
   <div class="hdr-in">
@@ -598,7 +612,7 @@ input[type=date].inp{font-size:16px;padding:11px 13px}
     </div>
     <div class="fld">
       <label class="lbl">備考・特記事項</label>
-      <textarea class="inp" id="f-memo" placeholder="例：冷蔵便で対応希望、○○様宛てで梱包など"></textarea>
+      <textarea class="inp" id="f-memo" oninput="upd()" maxlength="300" placeholder="例：冷蔵便で対応希望、○○様宛てで梱包など"></textarea>
     </div>
 
     <div class="fld">
@@ -640,10 +654,10 @@ input[type=date].inp{font-size:16px;padding:11px 13px}
 
 <div class="cscr" id="cscr">
   <div class="cion">🎉</div>
-  <div class="ctit">発注完了！<br>ありがとうございました</div>
-  <div class="csub">ミートチームへ発注が送信されました。<br>Slack #301 に通知が届きます。</div>
+  <div class="ctit" id="c-title">発注完了！<br>ありがとうございました</div>
+  <div class="csub" id="c-sub">ミートチームへ発注が送信されました。<br>Slack #301 に通知が届きます。</div>
   <div class="csum" id="csum"></div>
-  <div class="csn"><span style="font-size:16px">💬</span><span>スプレッドシートへの記録も自動で行われます</span></div>
+  <div class="csn" id="c-note"><span style="font-size:16px">💬</span><span>スプレッドシートへの記録も自動で行われます</span></div>
   <button class="back-btn" onclick="resetToTop()">↩ 続けて発注する（TOPに戻る）</button>
 </div>
 
@@ -658,7 +672,7 @@ const CUSTOMERS=[
   {id:'coedo',name:'コエドブルワリーザレストラン',kana:'こえどぶるわりー'},
   {id:'furusato',name:'ふるさとの湯',kana:'ふるさとのゆ'},
   {id:'taikoku',name:'大穀本部',kana:'たいこくほんぶ'},
-  {id:'cust-1779185271563',name:'テスト',kana:'てすと'},
+  {id:'hiranuma',name:'古民家ひらぬま',kana:'こみんかひらぬま'},
 ];
 const MEATS={
   GP:['ロース','バラ','肩ロース','ウデ','外モモ','ヒレ','内もも','シンタマ'],
@@ -672,6 +686,11 @@ const UNIT_MAP={
 };
 function getUnit(name){ return UNIT_MAP[name] || '枚'; }
 const UNIT_OPTIONS=['本','枚','個','kg'];
+// ★ 送信先（GASのウェブアプリURL）。未設定のままならデモモードで動きます
+const GAS_URL='https://script.google.com/macros/s/YOUR_GAS_DEPLOYMENT_ID/exec';
+const IS_DEMO=GAS_URL.indexOf('YOUR_GAS')>=0;
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+let sending=false;
 const MINS=[0,5,10,15,20,25,30,35,40,45,50,55];
 const RH=48; // 1行の高さ px
 
@@ -691,6 +710,7 @@ function init(){
       </button>`).join('');
   });
 
+  if(IS_DEMO)document.getElementById('demo-bar').style.display='block';
   // PC / スマホ判定
   const pcMq = window.matchMedia('(min-width: 768px)');
   if(pcMq.matches){
@@ -723,10 +743,7 @@ function init(){
 function initPC(){
   // PC: time入力を表示
   document.getElementById('pc-time-input').style.display='flex';
-  // 現在時刻をデフォルト
-  const now=new Date();
-  selH=now.getHours(); selM=now.getMinutes();
-  document.getElementById('pc-time').value=`${p2(selH)}:${p2(selM)}`;
+  // 出庫時間は必ず本人に選んでもらう（自動入力しない）
   updDisp();
 }
 
@@ -951,14 +968,14 @@ function renderSel(){
   list.innerHTML=st.meats.map(m=>`
     <div class="sitem">
       <div class="sin">
-        <span style="font-size:10px;color:${m.g==='その他'?'#d97706':'#9ca3af'};margin-right:3px;font-weight:${m.g==='その他'?700:400}">${m.g}</span>${m.n}
+        <span style="font-size:10px;color:${m.g==='その他'?'#d97706':'#9ca3af'};margin-right:3px;font-weight:${m.g==='その他'?700:400}">${m.g}</span>${esc(m.n)}
       </div>
       <div class="sic">
-        <button class="qb" onclick="changeQ('${m.id}',-1)">−</button>
-        <input class="q-inp" type="number" min="1" max="1000" value="${m.q}" onchange="setQInput('${m.id}',this.value)" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-        <button class="qb" onclick="changeQ('${m.id}',1)">＋</button>
-        <select class="u-sel" onchange="changeUnit('${m.id}',this.value)">${UNIT_OPTIONS.map(u=>`<option value="${u}"${u===m.unit?' selected':''}>${u}</option>`).join('')}</select>
-        <button class="db" onclick="delMeat('${m.id}')">✕</button>
+        <button class="qb" onclick="changeQ('${m.id}',-1)" aria-label="減らす">−</button>
+        <input class="q-inp" type="number" inputmode="numeric" pattern="[0-9]*" min="1" max="1000" value="${m.q}" aria-label="数量" onchange="setQInput('${m.id}',this.value)" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+        <button class="qb" onclick="changeQ('${m.id}',1)" aria-label="増やす">＋</button>
+        <select class="u-sel" aria-label="単位" onchange="changeUnit('${m.id}',this.value)">${UNIT_OPTIONS.map(u=>`<option value="${u}"${u===m.unit?' selected':''}>${u}</option>`).join('')}</select>
+        <button class="db" onclick="delMeat('${m.id}')" aria-label="削除">✕</button>
       </div>
     </div>`).join('');
 }
@@ -972,21 +989,27 @@ function selPdf(val){
   chk3(); updProg(); upd();
 }
 
+let dirty=false;
+window.addEventListener('beforeunload',e=>{if(dirty&&!sending){e.preventDefault();e.returnValue='';}});
+document.addEventListener('input',()=>{dirty=true;},true);
+document.addEventListener('click',e=>{if(e.target.closest('.cbtn,.mbtn,.pdf-btn'))dirty=true;},true);
 function onDate(){st.date=document.getElementById('f-date').value;document.getElementById('err3').classList.remove('show');chk3();updProg();upd();}
 function chk3(){const d=st.date&&selH!==null&&selM!==null;document.getElementById('card4').classList.toggle('locked',!d);if(d){setStep(3,'dn');updCbox();}}
 function isAll(){return isC1()&&st.meats.length>0&&st.date&&selH!==null&&selM!==null&&st.pdf!==null;}
-function fmtDate(s){if(!s)return '';const[y,m,d]=s.split('-');return `${y}年${+m}月${+d}日`;}
+function fmtDate(s){if(!s)return '';const[y,m,d]=s.split('-');const w='日月火水木金土'[new Date(+y,+m-1,+d).getDay()];return `${y}年${+m}月${+d}日(${w})`;}
 function updCbox(){
   const box=document.getElementById('cbox');
   if(!isAll()){box.innerHTML='フォームの入力が完了するとここに内容が表示されます。';box.className='ibx amb';return;}
-  const ml=st.meats.map(m=>`<span style="display:inline-block;background:rgba(26,46,34,.07);border-radius:5px;padding:2px 7px;margin:2px;font-size:11px">${m.g} ${m.n} ×${m.q}${m.unit||getUnit(m.n)}</span>`).join('');
+  const ml=st.meats.map(m=>`<span style="display:inline-block;background:rgba(26,46,34,.07);border-radius:5px;padding:2px 7px;margin:2px;font-size:11px">${m.g} ${esc(m.n)} ×${m.q}${m.unit||getUnit(m.n)}</span>`).join('');
+  const memo=document.getElementById('f-memo').value.trim();
   box.className='ibx grn';
   const pdfLabel = st.pdf==='yes'?'📄 あり（フォルダへ送付）':st.pdf==='no'?'なし':'未選択';
   box.innerHTML=`<div style="margin-bottom:7px;font-weight:700;color:#1a2e22;font-size:13px">📋 発注内容確認</div>
-    <div style="margin-bottom:3px"><span style="font-size:11px;color:#5a7060">卸先：</span>${getCustLabel()}</div>
+    <div style="margin-bottom:3px"><span style="font-size:11px;color:#5a7060">卸先：</span>${esc(getCustLabel())}</div>
     <div style="margin-bottom:5px"><span style="font-size:11px;color:#5a7060">出庫日時：</span>${fmtDate(st.date)} ${p2(selH)}:${p2(selM)}</div>
     <div style="margin-bottom:5px"><span style="font-size:11px;color:#5a7060">PDF：</span>${pdfLabel}</div>
-    <div style="font-size:11px;color:#5a7060;margin-bottom:3px">原料一覧：</div><div>${ml}</div>`;
+    <div style="font-size:11px;color:#5a7060;margin-bottom:3px">原料一覧：</div><div>${ml}</div>
+    ${memo?`<div style="margin-top:6px"><span style="font-size:11px;color:#5a7060">備考：</span>${esc(memo)}</div>`:''}`;
 }
 function updProg(){
   if(isC1())setStep(1,'dn');else setStep(1,'act');
@@ -1014,6 +1037,9 @@ async function doSubmit(){
     else{document.getElementById('err-pdf').classList.add('show');sc('card3');}
     return;
   }
+  if(sending)return;
+  if(!confirm(IS_DEMO?'【デモ版】この内容で送信の動きを確認します。\n（実際には送信されません）':'この内容で発注を送信します。よろしいですか？'))return;
+  sending=true;
   const btn=document.getElementById('sbtn');
   btn.classList.add('lod');btn.textContent='送信中...';
   const memo=document.getElementById('f-memo').value.trim();
@@ -1021,26 +1047,40 @@ async function doSubmit(){
     date:st.date,date_formatted:fmtDate(st.date),time:`${p2(selH)}:${p2(selM)}`,
     pdf_required:st.pdf==='yes', memo,
     submitted_at:new Date().toLocaleString('ja-JP',{timeZone:'Asia/Tokyo'})};
-  try{await fetch('https://script.google.com/macros/s/AKfycbzrgWzg0-_KMemyUeKEwzt1DtVFHTiC94ULb8HYfMuSFXduLZ1vU8XvrSqrU3jP1rJK/exec',
-    {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),mode:'no-cors'});}
-  catch(e){console.warn('GAS未設定',e.message);}
+  if(!IS_DEMO){
+    try{
+      await fetch(GAS_URL,{method:'POST',body:JSON.stringify(payload),mode:'no-cors'});
+    }catch(e){
+      sending=false;btn.classList.remove('lod');upd();
+      alert('送信できませんでした。電波の良い場所で、もう一度「発注を送信する」を押してください。\n続けて失敗する場合はミートチームへ連絡してください。');
+      return;
+    }
+  }
+  sending=false;dirty=false;
   showDone(payload);
 }
 function showDone(p){
   document.getElementById('main-form').style.display='none';
   document.getElementById('swrap').style.display='none';
   document.getElementById('cscr').classList.add('show');
-  const ml=p.meats.map(m=>`${m.grade} ${m.name} ×${m.qty}${m.unit||getUnit(m.name)}`).join('、');
+  const ml=p.meats.map(m=>`${m.grade} ${esc(m.name)} ×${m.qty}${m.unit||getUnit(m.name)}`).join('、');
   const pdfStr=p.pdf_required?'📄 あり（フォルダへ送付）':'なし';
   document.getElementById('csum').innerHTML=`
-    <div class="crow"><span class="crl">卸先</span><span class="crv">${p.customer}</span></div>
+    <div class="crow"><span class="crl">卸先</span><span class="crv">${esc(p.customer)}</span></div>
     <div class="crow"><span class="crl">出庫日時</span><span class="crv">${p.date_formatted} ${p.time}</span></div>
     <div class="crow"><span class="crl">PDF</span><span class="crv">${pdfStr}</span></div>
     <div class="crow"><span class="crl">原料</span><span class="crv">${ml}</span></div>
-    ${p.memo?`<div class="crow"><span class="crl">備考</span><span class="crv">${p.memo}</span></div>`:''}
-    <div class="crow"><span class="crl">送信日時</span><span class="crv">${p.submitted_at}</span></div>`;
+    ${p.memo?`<div class="crow"><span class="crl">備考</span><span class="crv">${esc(p.memo)}</span></div>`:''}
+    <div class="crow"><span class="crl">送信日時</span><span class="crv">${p.submitted_at}</span></div>
+`;
+  if(IS_DEMO){
+    document.getElementById('c-title').innerHTML='デモ送信が完了しました';
+    document.getElementById('c-sub').innerHTML='デモ版のため、実際の発注は<br>ミートチームに届いていません。';
+    document.getElementById('c-note').style.display='none';
+  }
 }
 function resetToTop(){
+  dirty=false;
   // state リセット
   st={tab:'ex',cid:null,meats:[],date:'',pdf:null};
   selH=null; selM=null; currentMode=null;
