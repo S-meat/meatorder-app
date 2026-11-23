@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>未整形原料 札の印刷 | ミートチーム</title>
+<style>
+:root{--ink:#111;--mute:#6b6b6b;--line:#d6d5cf;--bg:#f2f2ef}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","YuGothic","Meiryo",sans-serif;color:var(--ink);background:var(--bg);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.bar{position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid var(--line);padding:12px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.bar b{font-size:15px}
+.bar span{font-size:13px;color:var(--mute);flex:1;min-width:200px}
+.bar button{height:44px;padding:0 22px;border-radius:10px;border:0;background:var(--ink);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer}
+.msg{max-width:640px;margin:40px auto;padding:20px;background:#fff;border-radius:12px;border:1px solid var(--line);font-size:15px;line-height:1.8}
+.msg.err{border-color:#b42318;color:#b42318}
+.sheets{padding:20px 0 40px}
+/* A4 縦 1枚＝1品目 */
+.page{width:210mm;height:296mm;overflow:hidden;margin:0 auto 20px;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.12);padding:16mm 16mm 14mm;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--ink);padding-bottom:6mm}
+.kind{font-size:13mm;font-weight:900;letter-spacing:.06em}
+.no{font-size:9mm;font-weight:700;border:2px solid var(--ink);border-radius:3mm;padding:1.5mm 5mm}
+.date{margin-top:8mm;font-size:8mm;font-weight:700;color:var(--mute)}
+.date strong{display:block;font-size:15mm;line-height:1.2;color:var(--ink);font-weight:900;letter-spacing:.01em;white-space:nowrap}
+.cust{margin-top:8mm;font-size:8mm;font-weight:700;color:var(--mute)}
+.cust strong{display:block;font-size:14mm;line-height:1.25;color:var(--ink);font-weight:900;word-break:break-all}
+.item{margin-top:10mm;border:4px solid var(--ink);border-radius:6mm;padding:9mm 10mm;display:flex;align-items:baseline;gap:8mm;flex-wrap:wrap}
+.item .g{font-size:16mm;font-weight:900;background:var(--ink);color:#fff;border-radius:3mm;padding:1mm 5mm}
+.item .n{font-size:24mm;font-weight:900;line-height:1.1}
+.item .q{margin-left:auto;font-size:24mm;font-weight:900;white-space:nowrap}
+.item .q small{font-size:12mm;margin-left:2mm}
+.memo{margin-top:6mm;font-size:6.5mm;line-height:1.6;border-left:2mm solid var(--line);padding-left:4mm;white-space:pre-wrap;word-break:break-all;max-height:42mm;overflow:hidden}
+.foot{margin-top:auto;border-top:1px solid var(--line);padding-top:4mm;display:grid;grid-template-columns:1fr 1fr;gap:2mm 8mm;font-size:5mm;color:#333}
+.foot div b{display:inline-block;min-width:30mm;color:var(--mute);font-weight:700}
+.stamp{margin-top:4mm;display:flex;gap:6mm;justify-content:flex-end}
+.stamp div{width:24mm;height:22mm;border:1.5px solid var(--ink);border-radius:2mm;font-size:4mm;padding:1.5mm;color:var(--mute)}
+.void{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+@page{size:A4 portrait;margin:0}
+@media print{
+  body{background:#fff}
+  .bar,.msg{display:none!important}
+  .sheets{padding:0}
+  .page{margin:0;box-shadow:none;page-break-after:always;break-after:page}
+  .page:last-child{page-break-after:auto;break-after:auto}
+}
+</style>
+</head>
+<body>
+<div class="bar" id="bar" hidden>
+  <b>未整形原料 札の印刷</b>
+  <span id="bar-info"></span>
+  <button onclick="window.print()">印刷する</button>
+</div>
+<div class="msg" id="msg">読み込んでいます…</div>
+<div class="sheets" id="sheets"></div>
+
+<script>
+const GAS_URL='https://script.google.com/macros/s/AKfycbzrgWzg0-_KMemyUeKEwzt1DtVFHTiC94ULb8HYfMuSFXduLZ1vU8XvrSqrU3jP1rJK/exec';
+const WJ='日月火水木金土';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function jsonp(url,ms){
+  return new Promise((resolve,reject)=>{
+    const cb='fuda_cb_'+Date.now()+'_'+Math.floor(Math.random()*1e6);const s=document.createElement('script');
+    const tm=setTimeout(()=>{clean();reject(new Error('timeout'));},ms||20000);
+    function clean(){clearTimeout(tm);try{delete window[cb];}catch(e){window[cb]=undefined;}s.remove();}
+    window[cb]=d=>{clean();resolve(d);};
+    s.onerror=()=>{clean();reject(new Error('load'));};
+    s.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+cb+'&_='+Date.now();
+    document.head.appendChild(s);
+  });
+}
+function dateLabel(ymd,time){
+  if(!ymd)return '';
+  const[y,m,d]=ymd.split('-').map(Number);const dt=new Date(y,m-1,d);
+  return `${m}/${d}（${WJ[dt.getDay()]}）${time?' '+time:''}`;
+}
+function fail(t){$('msg').className='msg err';$('msg').innerHTML=t;}
+(async()=>{
+  const q=new URLSearchParams(location.search);
+  const o=q.get('o'),t=q.get('t');
+  if(!o||!t){fail('発注番号が指定されていません。Slackの［🖨 札を印刷］ボタンから開いてください。');return;}
+  let d;
+  try{d=await jsonp(GAS_URL+'?action=fuda&o='+encodeURIComponent(o)+'&t='+encodeURIComponent(t));}
+  catch(e){fail('読み込めませんでした。電波を確認して、ページを再読み込みしてください。');return;}
+  if(!d||!d.ok){fail(d&&d.error==='notfound'?'この発注は見つかりませんでした（'+esc(o)+'）。':'このページは開けません。Slackの［🖨 札を印刷］ボタンから開いてください。');return;}
+  const it=d.order,ms=it.meats||[];
+  if(it.state==='取消'){fail('<b>この発注はキャンセルされています。</b><br>'+esc(it.customer)+'｜'+esc(dateLabel(it.date,it.time))+'｜'+esc(it.order)+'<br>札は印刷しません。');return;}
+  const memo=[it.memo?String(it.memo):'',it.state==='修正'?'※ 修正あり（第'+it.ver+'版）。この札が最新の内容です。':''].filter(Boolean).join('\n');
+  $('sheets').innerHTML=ms.map((m,i)=>`
+    <section class="page">
+      <div class="top"><div class="kind">未整形原料</div><div class="no">${i+1} / ${ms.length}</div></div>
+      <div class="date">出庫日時<strong>${esc(dateLabel(it.date,it.time))}</strong></div>
+      <div class="cust">卸先<strong>${esc(it.customer)}${/様$/.test(it.customer)?'':' 様'}</strong></div>
+      <div class="item">${m.grade!=='その他'?`<span class="g">${esc(m.grade)}</span>`:''}<span class="n">${esc(m.name)}</span><span class="q">${esc(m.qty)}<small>${esc(m.unit)}</small></span></div>
+      ${memo?`<div class="memo">${esc(memo)}</div>`:''}
+      <div class="foot">
+        <div><b>発注番号</b>${esc(it.order)}</div>
+        <div><b>確保確認</b>${esc(d.checkedAt||'—')}</div>
+        <div><b>電話確認</b>${esc(it.staff||'—')}</div>
+        <div><b>営業推進</b>${esc(it.sender||'—')}</div>
+        <div><b>APV入力</b>${esc(it.apv||'—')}</div>
+        <div><b>印刷</b>${esc(d.printedAt||'')}</div>
+      </div>
+      <div class="stamp"><div>準備</div><div>出庫</div></div>
+    </section>`).join('');
+  $('msg').hidden=true;$('bar').hidden=false;
+  $('bar-info').textContent=`${it.customer}｜${dateLabel(it.date,it.time)} 出庫｜${ms.length}枚（品目ごとにA4・1枚）`;
+  document.title=`札_${it.customer}_${it.date}`;
+  setTimeout(()=>window.print(),400);
+})();
+</script>
+</body>
+</html>
