@@ -363,6 +363,100 @@ body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","YuGoth
 .force-mobile .rule li{padding:0;border-left:0}
 .force-mobile .grid.c3,.force-mobile .grid.c4{grid-template-columns:repeat(2,minmax(0,1fr))}
 
+/* 閉じているシートは見えなくする（読み上げ・全画面表示でも出ないように） */
+.sheet:not(.show){visibility:hidden;transition:transform .25s ease,opacity .2s,visibility 0s .25s}
+.sheet.show{visibility:visible}
+/* ---------- v4：タブ ---------- */
+.tabs{max-width:980px;margin:0 auto;padding:0 16px 10px;display:flex;gap:6px}
+.tabs button{flex:1;height:38px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:13.5px;font-weight:600;color:var(--mute)}
+.tabs button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+body.hist .steps{display:none}
+/* ---------- 合言葉 ---------- */
+.gate{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
+.gate-in{width:100%;max-width:360px;text-align:center}
+.gate .logo{width:52px;height:54px;margin:0 auto 14px;display:block}
+.gate h2{font-size:18px;margin-bottom:6px}
+.gate p{font-size:13px;color:var(--mute);margin-bottom:18px;line-height:1.7}
+.gate .inp{text-align:center;font-size:22px;letter-spacing:.3em;font-weight:700;margin-bottom:10px}
+.gate .err{color:var(--warn);font-size:13px;min-height:1.6em;margin-bottom:6px}
+/* ---------- 月間：カレンダー ---------- */
+.mcal{border:1px solid var(--line);border-radius:var(--r2);background:#fff;padding:10px;margin-top:4px}
+.mcal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.mcal-h b{font-size:15px}
+.mcal-h button{width:38px;height:34px;border-radius:8px;border:1px solid var(--line);font-size:14px}
+.mcal-h button:disabled{opacity:.3}
+.mcal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.mcal-g .wd{font-size:11px;color:var(--mute);text-align:center;padding:2px 0}
+.mcal-g .wd.sun,.mcal-g .d.sun{color:#b42318}.mcal-g .wd.sat{color:#1d4ed8}
+.mcal-g .d{height:40px;border-radius:8px;border:1px solid var(--line);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;background:#fff;position:relative}
+.mcal-g .d.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.mcal-g .d.dis{opacity:.28;pointer-events:none}
+.mcal-g .d.tdy::after{content:"";position:absolute;left:50%;bottom:4px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:currentColor}
+.mcal-g .e{height:40px}
+.wdq{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center}
+.wdq span{font-size:12px;color:var(--mute);margin-right:2px}
+.wdq button{height:32px;min-width:38px;padding:0 8px;border-radius:16px;border:1px solid var(--line);font-size:13px;background:#fff}
+.wdq .clr{margin-left:auto;text-decoration:underline;border:0;color:var(--mute);font-size:12px}
+/* ---------- 月間：数量の表 ---------- */
+.mgrid-w{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:var(--r2);margin-top:8px;background:#fff}
+.mgrid{border-collapse:separate;border-spacing:0;font-size:13px;min-width:100%}
+.mgrid th,.mgrid td{padding:6px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+.mgrid thead th{background:var(--soft);font-size:12px;font-weight:700;position:sticky;top:0}
+.mgrid th.dl,.mgrid td.dl{position:sticky;left:0;background:#fff;text-align:left;font-weight:700;font-variant-numeric:tabular-nums;border-right:1px solid var(--line);z-index:1}
+.mgrid thead th.dl{background:var(--soft);z-index:2}
+.mgrid tr:last-child td{border-bottom:0}
+.mgrid input{width:56px;height:36px;border:1px solid var(--line);border-radius:8px;text-align:center;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;-moz-appearance:textfield;background:#fff}
+.mgrid input.zero{color:var(--mute2);background:var(--soft)}
+.mgrid input::-webkit-outer-spin-button,.mgrid input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.mgrid small{display:block;font-size:10px;color:var(--mute);font-weight:400}
+.mgrid .rq{font-size:10px;color:var(--mute);font-weight:400;display:block}
+/* ---------- 送信履歴 ---------- */
+.hbar{display:grid;gap:8px;margin-bottom:12px}
+.hbar .row{gap:8px}
+.hbar select.inp{height:44px;font-size:14px;padding:0 10px;flex:0 0 40%}
+.hbar .inp{height:44px}
+.hnote{font-size:12px;color:var(--mute);margin:-4px 0 10px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.hnote button{font-size:12px;text-decoration:underline;color:var(--ink2)}
+.hday{font-size:12px;font-weight:700;color:var(--mute);letter-spacing:.06em;margin:16px 2px 6px}
+.hc{background:#fff;border:1px solid var(--line);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.hc.off{opacity:.62}
+.hc-h{padding:12px 14px 0;display:flex;gap:8px;align-items:flex-start}
+.hc-h .t{flex:1;min-width:0}
+.hc-h .t b{font-size:15px;display:block;line-height:1.4}
+.hc-h .t small{font-size:12px;color:var(--mute)}
+.hr{padding:10px 14px 12px;border-top:1px solid var(--line)}
+.hc-h+.hr{border-top:0}
+.hr-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.hr-date{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+.hr-meats{font-size:13.5px;margin-top:2px;line-height:1.6}
+.hr.off .hr-date,.hr.off .hr-meats{text-decoration:line-through;color:var(--mute)}
+.bdg{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.b{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:11px;font-size:11.5px;font-weight:700;border:1px solid var(--line2);color:var(--ink2);background:#fff;white-space:nowrap}
+.b.k{background:var(--ink);color:#fff;border-color:var(--ink)}
+.b.ok{background:var(--ok-bg);color:var(--ok);border-color:transparent}
+.b.ng{background:var(--warn-bg);color:var(--warn);border-color:transparent}
+.b.pt{background:var(--note-bg);color:var(--note-ink);border-color:transparent}
+.b.mu{color:var(--mute);border-style:dashed}
+.hr-meta{font-size:11.5px;color:var(--mute);margin-top:6px;line-height:1.6}
+.hr-acts{display:flex;gap:6px;margin-top:8px}
+.hr-acts button{height:36px;padding:0 14px;border-radius:9px;border:1px solid var(--line2);font-size:13px;font-weight:600;background:#fff}
+.hr-acts button.dk{background:var(--ink);color:#fff;border-color:var(--ink)}
+.hr-acts .dl{font-size:11px;color:var(--mute);align-self:center;line-height:1.4}
+.hist-log{font-size:11.5px;color:var(--mute);white-space:pre-wrap;background:var(--soft);border-radius:8px;padding:6px 8px;margin-top:6px}
+.more{display:block;width:100%;padding:10px;font-size:12.5px;color:var(--ink2);border-top:1px solid var(--line);background:var(--soft)}
+/* ---------- 修正・キャンセル ---------- */
+.sheet .sub{margin:16px 0 8px}
+.ed-list{border:1px solid var(--line);border-radius:var(--r2);overflow:hidden}
+.ed-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-top:1px solid var(--line)}
+.ed-item:first-child{border-top:0}
+.ed-item .nm{flex:1;min-width:0;font-weight:700;font-size:14px;display:flex;gap:6px;align-items:center}
+.ed-item .was{font-size:11px;color:var(--mute);font-weight:400}
+.ed-item .u{font-size:13px;color:var(--mute);width:22px}
+.ed-add{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ed-add .chip{min-height:34px;padding:0 12px;font-size:13px}
+.diff{font-size:13px;line-height:1.7;background:var(--soft);border-radius:8px;padding:10px 12px;margin-top:12px;white-space:pre-wrap}
+.warnbox{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:12.5px;line-height:1.6;margin-top:10px}
+
 [hidden]{display:none!important}
 @media(max-width:599px){
   .wrap{padding:12px}
@@ -399,6 +493,10 @@ body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","YuGoth
     <div class="st" id="st3"><i></i>3 出庫・確認</div>
     <div class="st" id="st4"><i></i>4 送信</div>
   </div>
+  <div class="tabs" role="tablist">
+    <button id="tab-new" class="on" role="tab" onclick="setTab('new')">発注する</button>
+    <button id="tab-hist" role="tab" onclick="setTab('hist')">送信履歴</button>
+  </div>
 </header>
 
 <main id="app">
@@ -411,7 +509,8 @@ body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","YuGoth
       <li><span class="n">02</span><div><div class="t">アプリで入力</div><div class="d">卸先・原料・ミートからの出庫日時（<strong>原則 納品日の前日</strong>）・APV入力の有無を選びます。</div></div></li>
       <li><span class="n">03</span><div><div class="t">送信</div><div class="d">内容を確認して送信します。ミートチームに通知が届きます。</div></div></li>
     </ol>
-    <div class="ex"><b>新規・スポット</b><span>手書きの発注書が必須です。PDFにして<strong>共有フォルダへ必ず格納</strong>してください。</span></div>
+    <div class="ex"><b>修正・キャンセル</b><span>「送信履歴」から行えます。<strong>増量・追加・日付変更は出庫日の3日前 12:00まで</strong>、減らす・キャンセルは前日まで。過ぎたら電話でお知らせください。</span></div>
+    <div class="ex" style="margin-top:8px"><b>新規・スポット</b><span>手書きの発注書が必須です。PDFにして<strong>共有フォルダへ必ず格納</strong>してください。</span></div>
   </section>
 
   <div class="layout">
@@ -470,10 +569,26 @@ body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","YuGoth
       <div class="card-h"><span class="no">03</span><h2>出庫日時・確認</h2><span class="ok"><svg><use href="#i-check"/></svg></span></div>
       <p class="lead">ミートチームからの出庫日時と、電話で確認した担当者を選んでください。</p>
 
-      <div class="sub">出庫日 <span class="tag-req">必須</span></div>
-      <input class="inp" type="date" id="f-date" onchange="setDate(this.value)" aria-label="出庫日">
-      <div class="date-note" id="date-note"></div>
-      <p class="hint" style="margin-top:2px">原則として<b>納品日の前日</b>です。</p>
+      <div class="seg" id="in-seg">
+        <button id="in-single" class="on" onclick="setInMode('single')">単発<small>出庫日が1日</small></button>
+        <button id="in-monthly" onclick="setInMode('monthly')">月間<small>出庫日をまとめて選ぶ</small></button>
+      </div>
+
+      <div id="single-date">
+        <div class="sub">出庫日 <span class="tag-req">必須</span></div>
+        <input class="inp" type="date" id="f-date" onchange="setDate(this.value)" aria-label="出庫日">
+        <div class="date-note" id="date-note"></div>
+        <p class="hint" style="margin-top:2px">原則として<b>納品日の前日</b>です。</p>
+      </div>
+
+      <div id="monthly-date" hidden>
+        <div class="sub">出庫日を選ぶ <span class="tag-req">必須</span><span class="count tnum" id="mcount" style="margin-left:auto;font-weight:400;color:var(--mute)"></span></div>
+        <div class="mcal" id="mcal"></div>
+        <p class="hint">日付をタップして選びます（もう一度タップで外す）。原則として<b>納品日の前日</b>です。</p>
+        <div class="sub">日ごとの数量</div>
+        <div id="mgrid"></div>
+        <p class="hint">最初は「02 原料」で決めた数量が入ります。その日に不要な原料は <b>0</b> にしてください。<br>ミートチームへの確保依頼は、各出庫日の<b>4日前の12:00</b>に自動で届きます。</p>
+      </div>
 
       <div class="sub">出庫時間 <span class="tag-req">必須</span></div>
       <div class="chips" id="time-chips"></div>
@@ -481,6 +596,10 @@ body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","YuGoth
 
       <div class="sub">電話で確認したミートチーム担当者 <span class="tag-req">必須</span></div>
       <div class="chips" id="staff-chips"></div>
+
+      <div class="sub">営業推進 送信者 <span class="tag-req">必須</span></div>
+      <div class="chips" id="sender-chips"></div>
+      <p class="hint">送信した人です。送信履歴に残ります（次回からこの端末で選んだ人が選ばれた状態になります）。</p>
 
       <div class="sub">APV入力の有無 <span class="tag-req">必須</span></div>
       <div class="pair">
@@ -514,7 +633,26 @@ body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","YuGoth
   </aside>
   </div><!-- /layout -->
 </div>
-<div class="foot"><button onclick="openHelp()">使い方</button><span>／</span><button onclick="openDrawer()">設定（卸先・担当者）</button><span>／</span><span>v3.0</span></div>
+<div class="foot"><button onclick="openHelp()">使い方</button><span>／</span><button onclick="openDrawer()">設定（卸先・担当者）</button><span>／</span><span>v4.0</span></div>
+</main>
+
+<!-- 送信履歴 -->
+<main id="hist" hidden>
+<div class="wrap">
+  <div class="hbar">
+    <div class="seg" id="h-seg">
+      <button id="h-up" class="on" onclick="setHView('up')">これからの出庫</button>
+      <button id="h-all" onclick="setHView('all')">過去も含む（45日）</button>
+    </div>
+    <div class="row">
+      <select class="inp" id="h-sender" onchange="renderHist()" aria-label="送信者で絞り込み"></select>
+      <input class="inp" id="h-q" type="search" placeholder="卸先・原料で絞り込み" oninput="renderHist()">
+    </div>
+  </div>
+  <div class="hnote"><span id="h-info"></span><button onclick="loadHist()">最新にする</button></div>
+  <div id="h-list"></div>
+</div>
+<div class="foot"><button onclick="openHelp()">使い方</button><span>／</span><span>v4.0</span></div>
 </main>
 
 <!-- 完了画面 -->
@@ -526,6 +664,7 @@ body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","YuGoth
   <div id="done-pdf"></div>
   <div class="sum"><dl id="done-dl"></dl></div>
   <button class="btn" onclick="resetAll()">続けて発注する</button>
+  <button class="btn line" style="margin-top:8px" onclick="resetAll();setTab('hist')">送信履歴を見る</button>
 </section>
 
 <!-- 下部の送信バー（スマホ） -->
@@ -563,6 +702,12 @@ body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","YuGoth
       <div class="addf"><div class="row"><input class="inp" id="add-staff" placeholder="名前（例：塚越）" maxlength="20"><button class="btn-s" onclick="addStaff()">追加</button></div></div>
     </div>
     <div class="dr-sec">
+      <h4>営業推進 送信者<span id="cnt-sender"></span></h4>
+      <p class="lead">手順03「営業推進 送信者」に表示する名前です。</p>
+      <ul class="mlist" id="sender-list"></ul>
+      <div class="addf"><div class="row"><input class="inp" id="add-sender" placeholder="名前（例：川村）" maxlength="20"><button class="btn-s" onclick="addSender()">追加</button></div></div>
+    </div>
+    <div class="dr-sec">
       <h4>発注書PDFの格納先</h4>
       <p class="lead">新規・スポットの案内に表示する共有フォルダの場所です（任意）。</p>
       <div class="addf"><div class="row"><input class="inp" id="pdf-path" placeholder="例：\\server\共有\発注書" maxlength="200"><button class="btn-s" onclick="savePdfPath()">保存</button></div></div>
@@ -584,20 +729,82 @@ body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","YuGoth
       <li><span class="n">03</span><div><div class="t">送信</div><div class="d">ミートチームのSlackに通知が届き、記録表にも残ります。</div></div></li>
     </ol>
   </section>
+  <h4>単発と月間</h4>
+  <ol>
+    <li>単発：出庫日が1日の発注です。送信するとすぐミートチームに確保のお願いが届きます。</li>
+    <li>月間：手順03で「月間」を選び、カレンダーで出庫日をまとめて選びます。曜日ボタンでその月の曜日をまとめて選べます。日ごとの数量は表で変えられます（不要な日は0）。</li>
+    <li>月間の確保のお願いは、各出庫日の<b>4日前の12:00</b>にミートチームへ自動で届きます。</li>
+  </ol>
   <h4>入力のしかた</h4>
   <ol>
     <li>01 卸先：いつもの取引先を選ぶか、「新規・スポット」で店名を入力</li>
     <li>02 原料：銘柄（GP・SGP・その他）→ 部位をタップ → 数量と単位（本・枚・個・kg）</li>
-    <li>03 出庫日時・電話で確認した担当者・APV入力の有無を選ぶ</li>
+    <li>03 単発／月間・出庫日時・電話で確認した担当者・営業推進 送信者・APV入力の有無を選ぶ</li>
     <li>04 黒い枠で内容を確かめて、下のボタンから送信</li>
   </ol>
   <h4>送信したあと</h4>
   <ol>
     <li>完了画面に「ミートチームに届きました」と発注番号が出れば完了です。</li>
     <li>「確認できませんでした」と出たときは、もう一度送信するか、ミートチームへ電話してください（同じ発注が二重に登録されることはありません）。</li>
-    <li>送信後に間違いに気づいたら、ミートチームへ電話でお知らせください。</li>
+  </ol>
+  <h4>修正・キャンセル（送信履歴）</h4>
+  <ol>
+    <li>上の「送信履歴」タブで、送った発注と<b>ミートチームの確保状況</b>を確認できます。</li>
+    <li>各発注の［修正］［キャンセル］から変更できます。月間は「この日だけ」「この日以降すべて」を選べます。</li>
+    <li><b>増量・品目の追加・日付の変更：出庫日の3日前 12:00まで</b></li>
+    <li><b>減らす・品目を外す・キャンセル：出庫日の前日まで</b></li>
+    <li>期限を過ぎたものは、ミートチームへ電話でお知らせください。</li>
   </ol>
   <div class="acts" style="grid-template-columns:1fr"><button class="btn" onclick="closeAll()">閉じる</button></div>
+</div>
+
+<!-- 修正 -->
+<div class="sheet" id="edit" role="dialog" aria-modal="true" aria-labelledby="edit-t">
+  <h3 id="edit-t">発注の修正</h3>
+  <p class="lead" id="edit-lead"></p>
+  <div id="edit-scope-w"><div class="sub">修正する範囲</div><div class="seg" id="edit-scope"></div></div>
+  <div id="edit-late" class="warnbox" hidden></div>
+  <div class="sub">原料と数量</div>
+  <div class="ed-list" id="edit-items"></div>
+  <div id="edit-add-w">
+    <div class="seg" id="edit-grade" style="margin-top:10px"></div>
+    <div class="ed-add" id="edit-add"></div>
+  </div>
+  <div id="edit-dt">
+    <div class="sub">出庫日・時刻</div>
+    <div class="row"><input class="inp" type="date" id="edit-date" onchange="ed.date=this.value;renderEdit()" aria-label="出庫日"><input class="inp" type="time" id="edit-time" step="300" style="max-width:140px" onchange="ed.time=this.value.replace(/^0/,'');renderEdit()" aria-label="出庫時刻"></div>
+    <div class="sub">備考</div>
+    <textarea class="inp" id="edit-memo" maxlength="300" style="min-height:64px" oninput="ed.memo=this.value;renderEdit(true)"></textarea>
+  </div>
+  <div class="sub">修正する人</div>
+  <div class="chips" id="edit-by"></div>
+  <div class="diff" id="edit-diff"></div>
+  <div class="acts"><button class="btn line" onclick="closeAll()">戻る</button><button class="btn" id="edit-go" onclick="sendEdit()">修正を送信</button></div>
+</div>
+
+<!-- キャンセル -->
+<div class="sheet" id="cxl" role="dialog" aria-modal="true" aria-labelledby="cxl-t">
+  <h3 id="cxl-t">発注のキャンセル</h3>
+  <p class="lead" id="cxl-lead"></p>
+  <div id="cxl-scope-w"><div class="sub">キャンセルする範囲</div><div class="seg" id="cxl-scope"></div></div>
+  <div class="sum" style="border:0;padding:0"><dl id="cxl-dl"></dl></div>
+  <div class="sub">理由 <span class="tag-opt">任意</span></div>
+  <input class="inp" id="cxl-reason" maxlength="60" placeholder="例：先方都合で中止">
+  <div class="sub">キャンセルする人</div>
+  <div class="chips" id="cxl-by"></div>
+  <div class="acts"><button class="btn line" onclick="closeAll()">戻る</button><button class="btn" id="cxl-go" onclick="sendCancel()">キャンセルする</button></div>
+</div>
+
+<!-- 合言葉 -->
+<div class="gate" id="gate" hidden>
+  <div class="gate-in">
+    <svg class="logo" aria-hidden="true"><use href="#i-logo"/></svg>
+    <h2>合言葉を入力してください</h2>
+    <p>未整形原料 発注アプリは社内専用です。<br>合言葉はミートチーム（塚越）にお問い合わせください。</p>
+    <input class="inp" id="gate-key" type="password" inputmode="numeric" autocomplete="off" maxlength="20" aria-label="合言葉">
+    <div class="err" id="gate-err"></div>
+    <button class="btn" id="gate-go" onclick="tryKey()">はじめる</button>
+  </div>
 </div>
 
 <!-- GAS への送信（hidden form + iframe：CORS 回避。ミートチームの他のアプリと同じ方式） -->
@@ -626,8 +833,14 @@ const DEFAULTS={
     {id:'hiranuma',name:'古民家ひらぬま',kana:'こみんかひらぬま'}
   ],
   staff:['塚越','池上','坂田','伊藤','吉田','清水'],
+  senders:['川村'],
   pdfPath:''
 };
+const LS_SENDER='meatorder.sender', LS_KEYWORD='meatorder.key', LS_LOCK='meatorder.lock';
+let RULES={requestDays:4,requestTime:'12:00',increaseDays:3,increaseTime:'12:00',cancelDays:1};
+let LOCKED=false;
+function lsGet(k){try{return localStorage.getItem(k)||'';}catch(e){return '';}}
+function lsSet(k,v){try{if(v)localStorage.setItem(k,v);else localStorage.removeItem(k);}catch(e){}}
 const CUTS=['ロース','バラ','肩ロース','ウデ','外モモ','ヒレ','内もも','シンタマ'];
 const UNIT_MAP={'ロース':'本','肩ロース':'本','外モモ':'本','ヒレ':'本','バラ':'枚','ウデ':'枚','内もも':'個','シンタマ':'個'};
 const UNITS=['本','枚','個','kg'];
@@ -647,6 +860,7 @@ function normalize(c){
   const d=clone(DEFAULTS);
   if(c&&Array.isArray(c.customers))d.customers=c.customers.filter(x=>x&&x.name).map(x=>({id:String(x.id||('c'+Math.random().toString(36).slice(2,9))),name:String(x.name),kana:String(x.kana||'')}));
   if(c&&Array.isArray(c.staff))d.staff=c.staff.map(String).filter(Boolean);
+  if(c&&Array.isArray(c.senders))d.senders=c.senders.map(String).filter(Boolean);
   if(c&&typeof c.pdfPath==='string')d.pdfPath=c.pdfPath;
   return d;
 }
@@ -663,10 +877,10 @@ function postForm(obj){
   }));
   return postChain;
 }
-function jsonp(url){
+function jsonp(url,ms){
   return new Promise((resolve,reject)=>{
     const cb='mo_cb_'+Date.now()+'_'+Math.floor(Math.random()*1e6);const s=document.createElement('script');
-    const tm=setTimeout(()=>{clean();reject(new Error('timeout'));},8000);
+    const tm=setTimeout(()=>{clean();reject(new Error('timeout'));},ms||8000);
     function clean(){clearTimeout(tm);try{delete window[cb];}catch(e){window[cb]=undefined;}s.remove();}
     window[cb]=d=>{clean();resolve(d);};s.onerror=()=>{clean();reject(new Error('network'));};
     s.src=url+(url.indexOf('?')<0?'?':'&')+'callback='+cb+'&_='+Date.now();document.body.appendChild(s);
@@ -679,13 +893,17 @@ function saveCfg(){
 function pullCfg(){
   if(IS_DEMO)return;
   jsonp(GAS_URL+'?action=settings').then(d=>{
-    if(d&&d.ok&&d.settings){cfg=normalize(d.settings);try{localStorage.setItem(LS_KEY,JSON.stringify(cfg));}catch(e){}renderAllCfg();}
+    if(!d||!d.ok)return;
+    if(d.rules)RULES=Object.assign(RULES,d.rules);
+    if(d.settings){cfg=normalize(d.settings);try{localStorage.setItem(LS_KEY,JSON.stringify(cfg));}catch(e){}renderAllCfg();}
+    setLock(!!d.lock);
   }).catch(()=>{});
 }
 let cfg=loadCfg();
 
 /* ===== 入力状態 ===== */
-function fresh(){return {mode:'ex',cid:null,newName:'',newContact:'',grade:'GP',meats:[],date:'',time:'',timeOther:false,staff:'',apv:null,pdf:false,memo:''};}
+function fresh(){const t=new Date();return {mode:'ex',cid:null,newName:'',newContact:'',grade:'GP',meats:[],date:'',time:'',timeOther:false,staff:'',apv:null,pdf:false,memo:'',
+  sender:lsGet(LS_SENDER),inMode:'single',mdates:[],mq:{},mtouched:{},mview:{y:t.getFullYear(),m:t.getMonth()}};}
 let st=fresh();
 let sending=false, dirty=false, tried=false;
 
@@ -747,6 +965,7 @@ function addEtc(){
   dirty=true;renderGrade();renderSel();refresh();
 }
 function renderSel(){
+  syncMonthly();
   $('sel-count').textContent=st.meats.length?`${st.meats.length} / ${MAX_ITEMS}種類`:'';
   const el=$('sel-list');
   if(!st.meats.length){el.innerHTML='<div class="empty">まだ原料がありません。<br>上の部位をタップすると、ここに追加されます。</div>';return;}
@@ -762,7 +981,7 @@ function renderSel(){
 }
 function clampQ(v){v=parseInt(v,10);if(isNaN(v)||v<1)v=1;return Math.min(MAX_QTY,v);}
 function stepQ(i,d){const m=st.meats[i];if(!m)return;m.q=clampQ(m.q+d);renderSel();refresh();}
-function typeQ(i,el){el.value=el.value.replace(/[^0-9]/g,'');const m=st.meats[i];if(!m)return;if(el.value!==''){m.q=clampQ(el.value);if(String(m.q)!==el.value)el.value=m.q;}refresh();}
+function typeQ(i,el){el.value=el.value.replace(/[^0-9]/g,'');const m=st.meats[i];if(!m)return;if(el.value!==''){m.q=clampQ(el.value);if(String(m.q)!==el.value)el.value=m.q;}syncMonthly();refresh();}
 function setUnit(i,u){const m=st.meats[i];if(!m)return;m.u=u;renderSel();refresh();}
 function delMeat(i){st.meats.splice(i,1);renderGrade();renderSel();refresh();}
 
@@ -782,6 +1001,13 @@ function renderStaff(){
   el.innerHTML=cfg.staff.map((s,i)=>`<button class="chip${s===st.staff?' on':''}" aria-pressed="${s===st.staff}" onclick="setStaff(${i})">${esc(s)}</button>`).join('');
 }
 function setStaff(i){const s=cfg.staff[i];st.staff=(st.staff===s?'':s);dirty=true;renderStaff();refresh();}
+function renderSender(){
+  const el=$('sender-chips');
+  if(st.sender&&!cfg.senders.includes(st.sender))st.sender='';
+  if(!cfg.senders.length){el.innerHTML='<div class="empty" style="width:100%">送信者が登録されていません。右上のメニュー（≡）から追加してください。</div>';return;}
+  el.innerHTML=cfg.senders.map((s,i)=>`<button class="chip${s===st.sender?' on':''}" aria-pressed="${s===st.sender}" onclick="setSender(${i})">${esc(s)}</button>`).join('');
+}
+function setSender(i){const s=cfg.senders[i];st.sender=(st.sender===s?'':s);lsSet(LS_SENDER,st.sender);renderSender();refresh();}
 function setApv(v){st.apv=v;$('apv-yes').classList.toggle('on',v==='あり');$('apv-no').classList.toggle('on',v==='なし');
   $('apv-yes').setAttribute('aria-pressed',v==='あり');$('apv-no').setAttribute('aria-pressed',v==='なし');dirty=true;refresh();}
 function setPdf(v){st.pdf=v;$('pdf-check').classList.toggle('on',v);dirty=true;refresh();}
@@ -791,9 +1017,13 @@ function missing(){
   const m=[];
   if(!custLabel())m.push(['c1','卸先']);
   if(!st.meats.length)m.push(['c2','原料']);
-  if(!st.date)m.push(['c3','出庫日']);
+  if(st.inMode==='monthly'){
+    if(!st.mdates.length)m.push(['c3','出庫日']);
+    else if(st.meats.length&&monthlyEntries().length<st.mdates.length)m.push(['c3','数量（全部0の日）']);
+  }else if(!st.date)m.push(['c3','出庫日']);
   if(!st.time)m.push(['c3','出庫時間']);
   if(!st.staff)m.push(['c3','確認した担当者']);
+  if(!st.sender)m.push(['c3','送信者']);
   if(!st.apv)m.push(['c3','APV入力の有無']);
   if(st.mode==='new'&&!st.pdf)m.push(['c3','発注書PDFの格納']);
   return m;
@@ -801,19 +1031,24 @@ function missing(){
 function sumRows(p){
   const nil='<span class="nil">未入力</span>';
   const meats=p.meats.length?'<ul>'+p.meats.map(m=>`<li><span>${esc(m.grade)} ${esc(m.name)}</span><span>${m.qty} ${esc(m.unit)}</span></li>`).join('')+'</ul>':nil;
+  const mon=p.mode==='monthly';
+  const ent=mon?(p.entries.length?'<ul>'+p.entries.map(e=>`<li><span>${esc(mdLabel(e.date))}</span><span>${esc(e.meats.map(m=>m.name+m.qty).join('・'))}</span></li>`).join('')+'</ul>':nil):'';
   let h=`<dt>卸先</dt><dd>${p.customer?esc(p.customer)+(p.customer_type==='新規・スポット'?' <span class="gtag etc">新規・スポット</span>':''):nil}</dd>
-    <dt>原料</dt><dd>${meats}</dd>
-    <dt>出庫日時</dt><dd class="tnum">${p.date?esc(p.date_formatted)+' '+(p.time?esc(p.time):''):nil}</dd>
+    <dt>原料</dt><dd>${mon?(p.meats.length?esc(p.meats.map(m=>(m.grade==='その他'?'':m.grade)+m.name+'（'+m.unit+'）').join('・')):nil):meats}</dd>
+    ${mon?`<dt>出庫日<br><span class="tnum">${p.entries.length}日</span></dt><dd class="tnum">${ent}${p.time?'<div style="margin-top:4px">出庫時間 '+esc(p.time)+'</div>':''}</dd>`
+      :`<dt>出庫日時</dt><dd class="tnum">${p.date?esc(p.date_formatted)+' '+(p.time?esc(p.time):''):nil}</dd>`}
     <dt>確認した担当者</dt><dd>${p.staff?esc(p.staff):nil}</dd>
+    <dt>送信者</dt><dd>${p.sender?esc(p.sender):nil}</dd>
     <dt>APV入力</dt><dd>${p.apv?esc(p.apv):nil}</dd>`;
   if(p.customer_type==='新規・スポット')h+=`<dt>発注書PDF</dt><dd>${p.pdf_stored?'共有フォルダへ格納済み':nil}</dd>`;
   if(p.memo)h+=`<dt>備考</dt><dd>${esc(p.memo)}</dd>`;
   return h;
 }
 function payload(){
-  return {customer:custLabel(),customer_type:st.mode==='new'?'新規・スポット':'既存',
-    meats:st.meats.map(m=>({grade:m.g,name:m.n,qty:m.q,unit:m.u})),
-    date:st.date,date_formatted:fmtDate(st.date),time:st.time,staff:st.staff,apv:st.apv||'',
+  const mon=st.inMode==='monthly';
+  return {customer:custLabel(),customer_type:st.mode==='new'?'新規・スポット':'既存',mode:mon?'monthly':'single',
+    meats:st.meats.map(m=>({grade:m.g,name:m.n,qty:m.q,unit:m.u})),entries:mon?monthlyEntries():[],
+    date:mon?'':st.date,date_formatted:mon?'':fmtDate(st.date),time:st.time,staff:st.staff,sender:st.sender,apv:st.apv||'',
     pdf_stored:st.mode==='new'?st.pdf:null,memo:st.memo.trim(),
     submitted_at:new Date().toLocaleString('ja-JP',{timeZone:'Asia/Tokyo'})};
 }
@@ -824,6 +1059,7 @@ function refresh(){
   [['c1',ok1],['c2',ok2],['c3',ok3]].forEach(([id,o])=>{$(id).classList.toggle('done',o);if(o)$(id).classList.remove('err');});
   $('sum-dl').innerHTML=sumRows(payload());
   const pills=[];
+  if(st.inMode==='monthly')pills.push(`<span class="pl white">月間 ${st.mdates.length}日</span>`);
   if(st.meats.length)pills.push(`<span class="pl white">${st.meats.length}品目</span>`);
   if(st.apv)pills.push(`<span class="pl gray">APV ${esc(st.apv)}</span>`);
   if(st.mode==='new')pills.push(st.pdf?'<span class="pl gray">発注書PDF 格納済み</span>':'<span class="pl red">発注書PDF 未格納</span>');
@@ -881,8 +1117,8 @@ function setStatus(s,order){
   const el=$('done-status');
   const map={
     wait:'<div class="msg wait"><span class="spin"></span>ミートチームへ送信しています…</div>',
-    ok:`<div class="msg ok"><b>ミートチームに届きました</b>発注番号 ${esc(order||'')}<br>Slackに通知が届き、記録表にも残りました。</div>`,
-    slackng:`<div class="msg err"><b>記録はできましたが、Slack通知に失敗しました</b>発注番号 ${esc(order||'')}<br>お手数ですが、ミートチームへ電話でお伝えください。</div>`,
+    ok:`<div class="msg ok"><b>ミートチームに届きました</b>${String(order||'').charAt(0)==='M'?'月間ID':'発注番号'} ${esc(order||'')}<br>Slackに通知が届き、記録表にも残りました。${lastSent&&lastSent.mode==='monthly'?'<br>確保のお願いは、各出庫日の4日前の12:00にミートチームへ届きます。':''}<br>内容は「送信履歴」で確認・修正できます。</div>`,
+    slackng:`<div class="msg err"><b>記録はできましたが、Slack通知に失敗しました</b>${String(order||'').charAt(0)==='M'?'月間ID':'発注番号'} ${esc(order||'')}<br>お手数ですが、ミートチームへ電話でお伝えください。</div>`,
     ng:'<div class="msg err"><b>届いたことを確認できませんでした</b>電波の良い場所で「もう一度送信する」を押してください。同じ発注が二重に登録されることはありません。続けて失敗する場合は、ミートチームへ電話でお伝えください。<button class="btn" onclick="deliver(lastSent)">もう一度送信する</button></div>'
   };
   el.innerHTML=map[s]||'';
@@ -904,7 +1140,7 @@ function resetAll(){
   if($('cust-q'))$('cust-q').value='';
   $('f-pdf').checked=false;$('pdf-check').classList.remove('on');$('date-note').textContent='';
   ['c1','c2','c3'].forEach(id=>$(id).classList.remove('err'));
-  setMode('ex');setApv(null);dirty=false;
+  setMode('ex');setApv(null);setInMode('single');dirty=false;
   $('done').classList.remove('show');$('app').hidden=false;$('bar').hidden=false;
   renderAllCfg();renderGrade();renderSel();renderTimes();refresh();window.scrollTo(0,0);
 }
@@ -912,7 +1148,7 @@ function resetAll(){
 /* ===== 設定メニュー ===== */
 function openHelp(){$('ov').classList.add('show');$('help').classList.add('show');}
 function openDrawer(){renderSettings();document.body.classList.add('dr-open');$('ov').classList.add('show');$('drawer').classList.add('show');}
-function closeAll(){['ov','sheet','drawer','help'].forEach(id=>$(id).classList.remove('show'));document.body.classList.remove('dr-open');}
+function closeAll(){if(busyChange)return;['ov','sheet','drawer','help','edit','cxl'].forEach(id=>$(id).classList.remove('show'));document.body.classList.remove('dr-open');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll();});
 function renderSettings(){
   $('cnt-cust').textContent=cfg.customers.length+'件';$('cnt-staff').textContent=cfg.staff.length+'名';
@@ -922,6 +1158,10 @@ function renderSettings(){
   $('staff-list').innerHTML=cfg.staff.length?cfg.staff.map((s,i)=>`<li><span class="nm">${esc(s)}</span>
     <button class="mv" onclick="moveStaff(${i},-1)" ${i===0?'disabled':''} aria-label="上へ">▲</button><button class="mv" onclick="moveStaff(${i},1)" ${i===cfg.staff.length-1?'disabled':''} aria-label="下へ">▼</button>
     <button class="rm" onclick="delStaff(${i})">削除</button></li>`).join(''):'<li><span class="nm" style="color:var(--mute)">登録がありません</span></li>';
+  $('cnt-sender').textContent=cfg.senders.length+'名';
+  $('sender-list').innerHTML=cfg.senders.length?cfg.senders.map((s,i)=>`<li><span class="nm">${esc(s)}</span>
+    <button class="mv" onclick="moveSender(${i},-1)" ${i===0?'disabled':''} aria-label="上へ">▲</button><button class="mv" onclick="moveSender(${i},1)" ${i===cfg.senders.length-1?'disabled':''} aria-label="下へ">▼</button>
+    <button class="rm" onclick="delSender(${i})">削除</button></li>`).join(''):'<li><span class="nm" style="color:var(--mute)">登録がありません</span></li>';
   $('pdf-path').value=cfg.pdfPath||'';
   $('sync-note').textContent=IS_DEMO?'トライアル中の設定は、この端末（ブラウザ）にだけ保存されます。':'設定は記録表（未整形原料発注管理）に保存され、全員の画面に反映されます（各自が次にアプリを開いたとき）。';
 }
@@ -929,7 +1169,8 @@ function renderAllCfg(){
   if(st.cid&&!cfg.customers.some(c=>c.id===st.cid))st.cid=null;
   if(st.staff&&!cfg.staff.includes(st.staff))st.staff='';
   document.querySelectorAll('[data-pdfpath]').forEach(el=>el.textContent=cfg.pdfPath?'格納先：'+cfg.pdfPath:'');
-  renderCustomers();renderStaff();refresh();
+  renderCustomers();renderStaff();renderSender();refresh();
+  if(H.loaded)renderHist();
 }
 function commit(msg){saveCfg();renderSettings();renderAllCfg();if(msg)toast(msg);}
 function addCustomer(){
@@ -948,8 +1189,348 @@ function addStaff(){
 }
 function delStaff(i){const s=cfg.staff[i];if(s==null||!confirm(`担当者「${s}」を削除しますか？`))return;cfg.staff.splice(i,1);commit('削除しました');}
 function moveStaff(i,d){const a=cfg.staff,j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];commit();}
+function addSender(){
+  const n=$('add-sender').value.trim();if(!n){$('add-sender').focus();return;}
+  if(cfg.senders.includes(n)){toast('同じ名前の送信者がいます');return;}
+  cfg.senders.push(n);$('add-sender').value='';commit(`「${n}」を追加しました`);
+}
+function delSender(i){const s=cfg.senders[i];if(s==null||!confirm(`送信者「${s}」を削除しますか？`))return;cfg.senders.splice(i,1);commit('削除しました');}
+function moveSender(i,d){const a=cfg.senders,j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];commit();}
 function savePdfPath(){cfg.pdfPath=$('pdf-path').value.trim();commit('格納先を保存しました');}
-function resetCfg(){if(!confirm('卸先・担当者・格納先を初期設定に戻しますか？'))return;cfg=clone(DEFAULTS);commit('初期設定に戻しました');}
+function resetCfg(){if(!confirm('卸先・担当者・送信者・格納先を初期設定に戻しますか？'))return;cfg=clone(DEFAULTS);commit('初期設定に戻しました');}
+
+/* ===== v4：日付の道具 ===== */
+const WJ='日月火水木金土';
+function ymdStr(d){return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;}
+function ymdD(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+function addD(s,n){const d=ymdD(s);d.setDate(d.getDate()+n);return ymdStr(d);}
+function mdLabel(s){if(!s)return '';const d=ymdD(s);return `${d.getMonth()+1}/${d.getDate()}(${WJ[d.getDay()]})`;}
+function todayStr(){return ymdStr(new Date());}
+function nowStr(){const d=new Date();return `${ymdStr(d)} ${p2(d.getHours())}:${p2(d.getMinutes())}`;}
+function reqAt(s){return addD(s,-RULES.requestDays)+' '+RULES.requestTime;}
+function incUntil(s){return addD(s,-RULES.increaseDays)+' '+RULES.increaseTime;}
+function untilLabel(k){const[d,t]=k.split(' ');return mdLabel(d)+' '+t;}
+
+/* ===== v4：単発／月間 ===== */
+function setInMode(m){
+  st.inMode=m;
+  $('in-single').classList.toggle('on',m==='single');$('in-monthly').classList.toggle('on',m==='monthly');
+  $('single-date').hidden=m!=='single';$('monthly-date').hidden=m!=='monthly';
+  if(m==='monthly'){renderMcal();renderMgrid();}
+  dirty=true;refresh();
+}
+function mkey(m){return m.g+'|'+m.n;}
+function renderMcal(){
+  const v=st.mview,first=new Date(v.y,v.m,1),last=new Date(v.y,v.m+1,0),t=new Date(),td=todayStr();
+  const minM=t.getFullYear()*12+t.getMonth(),cur=v.y*12+v.m;
+  const lead=first.getDay();
+  let h=`<div class="mcal-h"><button onclick="moveMonth(-1)" ${cur<=minM?'disabled':''} aria-label="前の月">‹</button><b>${v.y}年${v.m+1}月</b><button onclick="moveMonth(1)" ${cur>=minM+3?'disabled':''} aria-label="次の月">›</button></div><div class="mcal-g">`;
+  h+=[...WJ].map((w,i)=>`<div class="wd${i===0?' sun':i===6?' sat':''}">${w}</div>`).join('');
+  for(let i=0;i<lead;i++)h+='<div class="e"></div>';
+  for(let d=1;d<=last.getDate();d++){
+    const s=`${v.y}-${p2(v.m+1)}-${p2(d)}`,dow=(lead+d-1)%7,on=st.mdates.includes(s);
+    h+=`<button class="d${on?' on':''}${s<td?' dis':''}${s===td?' tdy':''}${dow===0?' sun':''}" aria-pressed="${on}" onclick="toggleMDate('${s}')">${d}</button>`;
+  }
+  h+='</div><div class="wdq"><span>曜日でまとめて</span>'+[1,2,3,4,5,6,0].map(w=>`<button onclick="pickWeekday(${w})">${WJ[w]}</button>`).join('')+'<button class="clr" onclick="clearMDates()">選択をすべて外す</button></div>';
+  $('mcal').innerHTML=h;
+  $('mcount').textContent=st.mdates.length?`${st.mdates.length}日 選択中`:'';
+}
+function moveMonth(d){let m=st.mview.m+d,y=st.mview.y;if(m<0){m=11;y--;}if(m>11){m=0;y++;}st.mview={y,m};renderMcal();}
+function addMDate(s){if(!st.mdates.includes(s)){st.mdates.push(s);st.mdates.sort();}}
+function toggleMDate(s){
+  const i=st.mdates.indexOf(s);
+  if(i>=0)st.mdates.splice(i,1);else{if(st.mdates.length>=31){toast('出庫日は31日までです');return;}addMDate(s);}
+  dirty=true;syncMonthly();renderMcal();refresh();
+}
+function pickWeekday(w){
+  const v=st.mview,last=new Date(v.y,v.m+1,0).getDate(),td=todayStr(),list=[];
+  for(let d=1;d<=last;d++){const dt=new Date(v.y,v.m,d);const s=ymdStr(dt);if(dt.getDay()===w&&s>=td)list.push(s);}
+  if(!list.length)return;
+  const all=list.every(s=>st.mdates.includes(s));
+  list.forEach(s=>{const i=st.mdates.indexOf(s);if(all){if(i>=0)st.mdates.splice(i,1);}else if(st.mdates.length<31)addMDate(s);});
+  dirty=true;syncMonthly();renderMcal();refresh();
+}
+function clearMDates(){if(!st.mdates.length)return;st.mdates=[];st.mq={};st.mtouched={};syncMonthly();renderMcal();refresh();}
+// 原料・日付が変わったら表をそろえる（手で変えていないマスは「02 原料」の数量に合わせる）
+function syncMonthly(){
+  const keys=st.meats.map(mkey),mq={};
+  st.mdates.forEach(d=>{
+    mq[d]={};
+    st.meats.forEach(m=>{const k=mkey(m),old=st.mq[d]&&st.mq[d][k];mq[d][k]=(st.mtouched[d+'|'+k]&&old!==undefined)?old:m.q;});
+  });
+  st.mq=mq;
+  Object.keys(st.mtouched).forEach(t=>{const[d,...r]=t.split('|');if(!st.mdates.includes(d)||!keys.includes(r.join('|')))delete st.mtouched[t];});
+  if(st.inMode==='monthly')renderMgrid();
+}
+function renderMgrid(){
+  const el=$('mgrid');
+  if(!st.mdates.length){el.innerHTML='<div class="empty">上のカレンダーで出庫日を選んでください。</div>';return;}
+  if(!st.meats.length){el.innerHTML='<div class="empty">「02 原料」で原料を追加すると、ここに日ごとの数量の表が出ます。</div>';return;}
+  const now=nowStr();
+  let h='<div class="mgrid-w"><table class="mgrid"><thead><tr><th class="dl">出庫日</th>'+st.meats.map(m=>`<th>${esc((m.g==='その他'?'':m.g+' ')+m.n)}<small>${esc(m.u)}</small></th>`).join('')+'</tr></thead><tbody>';
+  st.mdates.forEach(d=>{
+    const ra=reqAt(d);
+    h+=`<tr><td class="dl">${mdLabel(d)}<span class="rq">${now>=ra?'送信後すぐ確保依頼':'確保依頼 '+untilLabel(ra)}</span></td>`+st.meats.map(m=>{const k=mkey(m),q=st.mq[d][k];
+      return `<td><input type="number" inputmode="numeric" min="0" max="${MAX_QTY}" value="${q}" class="${q?'':'zero'}" aria-label="${esc(mdLabel(d)+' '+m.n)}" data-d="${d}" data-k="${esc(k)}" oninput="setMQ(this)" onblur="this.value=st.mq[this.dataset.d][this.dataset.k]"></td>`;}).join('')+'</tr>';
+  });
+  el.innerHTML=h+'</tbody></table></div>';
+}
+function setMQ(el){
+  el.value=el.value.replace(/[^0-9]/g,'');
+  const d=el.dataset.d,k=el.dataset.k;if(!st.mq[d])return;
+  if(el.value==='')return;
+  let v=Math.min(MAX_QTY,Math.max(0,parseInt(el.value,10)||0));
+  st.mq[d][k]=v;st.mtouched[d+'|'+k]=true;el.classList.toggle('zero',!v);dirty=true;refresh();
+}
+function monthlyEntries(){
+  return st.mdates.map(d=>({date:d,date_formatted:fmtDate(d),
+    meats:st.meats.filter(m=>(st.mq[d]||{})[mkey(m)]>0).map(m=>({grade:m.g,name:m.n,qty:st.mq[d][mkey(m)],unit:m.u}))})).filter(e=>e.meats.length);
+}
+
+/* ===== v4：合言葉 ===== */
+function setLock(on){
+  LOCKED=on;lsSet(LS_LOCK,on?'1':'');
+  if(!on){$('gate').hidden=true;return;}
+  const k=lsGet(LS_KEYWORD);
+  if(!k){showGate();return;}
+  jsonp(GAS_URL+'?action=auth&key='+encodeURIComponent(k)).then(d=>{if(d&&d.ok===false){lsSet(LS_KEYWORD,'');showGate();}}).catch(()=>{});
+}
+function showGate(msg){$('gate').hidden=false;$('gate-err').textContent=msg||'';setTimeout(()=>$('gate-key').focus(),60);}
+async function tryKey(){
+  const k=$('gate-key').value.trim();if(!k){$('gate-key').focus();return;}
+  const b=$('gate-go');b.textContent='確認中…';b.classList.add('wait');
+  try{
+    const d=await jsonp(GAS_URL+'?action=auth&key='+encodeURIComponent(k));
+    if(d&&d.ok){lsSet(LS_KEYWORD,k);$('gate').hidden=true;$('gate-key').value='';if(document.body.classList.contains('hist'))loadHist();}
+    else{$('gate-err').textContent='合言葉が違います';$('gate-key').select();}
+  }catch(e){$('gate-err').textContent='確認できませんでした。電波を確認してください';}
+  b.textContent='はじめる';b.classList.remove('wait');
+}
+
+/* ===== v4：タブ ===== */
+function setTab(t){
+  const h=t==='hist';
+  document.body.classList.toggle('hist',h);
+  $('tab-new').classList.toggle('on',!h);$('tab-hist').classList.toggle('on',h);
+  $('app').hidden=h||$('done').classList.contains('show');$('bar').hidden=h||$('done').classList.contains('show');$('hist').hidden=!h;
+  if(h){$('done').classList.remove('show');if(!H.loaded||Date.now()-H.at>60000)loadHist();else renderHist();}
+  else if(!$('done').classList.contains('show')){$('app').hidden=false;$('bar').hidden=false;}
+  window.scrollTo(0,0);
+}
+
+/* ===== v4：送信履歴 ===== */
+const H={items:[],loaded:false,loading:false,err:'',view:'up',at:0,open:{},today:'',now:''};
+async function loadHist(){
+  if(IS_DEMO){H.err='トライアル版では送信履歴は使えません';renderHist();return;}
+  H.loading=true;renderHist();
+  try{
+    const d=await jsonp(GAS_URL+'?action=list&key='+encodeURIComponent(lsGet(LS_KEYWORD)),25000);
+    if(d&&d.ok){H.items=d.items||[];H.today=d.today;H.now=d.now;if(d.rules)RULES=Object.assign(RULES,d.rules);H.err='';H.loaded=true;H.at=Date.now();}
+    else if(d&&d.error==='key'){lsSet(LS_KEYWORD,'');showGate('合言葉を入力してください');H.err='合言葉を入力すると表示されます';}
+    else H.err='読み込めませんでした';
+  }catch(e){H.err='読み込めませんでした。電波の良い場所で「最新にする」を押してください';}
+  H.loading=false;renderHist();
+}
+function setHView(v){H.view=v;$('h-up').classList.toggle('on',v==='up');$('h-all').classList.toggle('on',v==='all');renderHist();}
+function hFind(order){return H.items.find(i=>i.order===order);}
+function siblings(it){return it.monthlyId?H.items.filter(i=>i.monthlyId===it.monthlyId).sort((a,b)=>a.date<b.date?-1:1):[it];}
+function meatsLine(ms){return ms.map(m=>(m.grade==='その他'?'':m.grade)+m.name+' '+m.qty+m.unit).join('／');}
+function secBadge(it){
+  if(it.state==='取消')return '<span class="b k">キャンセル</span>';
+  return {wait:`<span class="b mu">確保依頼前（${esc(untilLabel(reqAt(it.date)))}に依頼）</span>`,none:'<span class="b ng">未確保</span>',part:'<span class="b pt">一部確保</span>',all:'<span class="b ok">確保済み</span>'}[it.secure]||'';
+}
+function rowHtml(it,showCust){
+  const x=it.state==='取消',past=it.date<H.today;
+  const b=[secBadge(it)];
+  if(it.state==='修正')b.push(`<span class="b">修正 第${it.ver}版</span>`);
+  if(it.peaceful==='mail'&&!x)b.push('<span class="b">ピースフル様 依頼済み</span>');
+  let acts='';
+  if(!x&&!past&&it.canCancel){
+    acts=`<div class="hr-acts"><button class="dk" onclick="openEdit('${esc(it.order)}')">修正</button><button onclick="openCancel('${esc(it.order)}')">キャンセル</button>
+      <span class="dl">${it.canIncrease?'増量・追加 '+esc(untilLabel(it.increaseUntil))+'まで<br>':'増量・追加は期限切れ（電話で）<br>'}減らす・取消 ${esc(mdLabel(it.cancelUntil))}まで</span></div>`;
+  }else if(!x&&!past){acts='<div class="hr-meta">期限を過ぎています。変更はミートチームへ電話でお知らせください。</div>';}
+  return `<div class="hr${x?' off':''}">
+    <div class="hr-top"><span class="hr-date">${esc(mdLabel(it.date))}${it.time?' '+esc(it.time):''}</span>${showCust?`<span style="font-size:13px;font-weight:700">${esc(it.customer)}</span>`:''}</div>
+    <div class="hr-meats">${esc(meatsLine(it.meats))}</div>
+    <div class="bdg">${b.join('')}</div>
+    <div class="hr-meta">${esc(it.order)}｜電話確認 ${esc(it.staff||'—')}｜送信 ${esc(it.sender||'—')}｜APV ${esc(it.apv||'—')}${it.memo?'｜'+esc(it.memo):''}</div>
+    ${it.history?`<div class="hist-log">${esc(it.history)}</div>`:''}
+    ${acts}
+  </div>`;
+}
+function renderHist(){
+  // 送信者の絞り込み
+  const sel=$('h-sender'),cur=sel.value;
+  const names=[...new Set(cfg.senders.concat(H.items.map(i=>i.sender).filter(Boolean)))];
+  sel.innerHTML='<option value="">送信者：すべて</option>'+names.map(n=>`<option value="${esc(n)}"${n===cur?' selected':''}>${esc(n)}</option>`).join('');
+  const el=$('h-list');
+  if(H.loading&&!H.loaded){el.innerHTML='<div class="msg wait"><span class="spin"></span>読み込んでいます…</div>';$('h-info').textContent='';return;}
+  if(H.err&&!H.loaded){el.innerHTML=`<div class="msg err">${esc(H.err)}</div>`;$('h-info').textContent='';return;}
+  const q=toHira($('h-q').value.trim()),who=sel.value,td=H.today||todayStr();
+  let list=H.items.filter(i=>(H.view==='all'||i.date>=td)&&(!who||i.sender===who)&&(!q||toHira(i.customer).includes(q)||toHira(meatsLine(i.meats)).includes(q)));
+  // 月間はまとめる
+  const groups=[],seen={};
+  list.forEach(i=>{const k=i.monthlyId||i.order;if(!seen[k]){seen[k]={key:k,mon:!!i.monthlyId,items:[]};groups.push(seen[k]);}seen[k].items.push(i);});
+  groups.forEach(g=>{g.items.sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);g.first=g.items[0].date;});
+  groups.sort((a,b)=>H.view==='all'?(a.first<b.first?1:-1):(a.first<b.first?-1:1));
+  $('h-info').textContent=(H.loading?'更新中…　':'')+`${list.length}件`+(H.at?`（${new Date(H.at).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})} 時点）`:'');
+  if(!groups.length){el.innerHTML=`<div class="empty">${H.view==='up'?'これからの出庫はありません。':'該当する発注はありません。'}</div>`;return;}
+  el.innerHTML=groups.map(g=>{
+    const a=g.items[0];
+    if(!g.mon){
+      return `<div class="hc${a.state==='取消'?' off':''}"><div class="hc-h"><div class="t"><b>${esc(a.customer)}</b><small>${a.type==='新規・スポット'?'新規・スポット｜':''}単発｜受付 ${esc(a.received)}</small></div></div>${rowHtml(a,false)}</div>`;
+    }
+    const all=siblings(a),open=H.open[g.key],shown=open?g.items:g.items.slice(0,3);
+    const live=all.filter(i=>i.state!=='取消');
+    return `<div class="hc"><div class="hc-h"><div class="t"><b>${esc(a.customer)}　<span class="b k" style="vertical-align:2px">月間</span></b>
+      <small>${esc(mdLabel(all[0].date))}〜${esc(mdLabel(all[all.length-1].date))}｜${live.length}件${all.length>live.length?'（キャンセル'+(all.length-live.length)+'件）':''}｜受付 ${esc(a.received)}</small></div></div>
+      ${shown.map(i=>rowHtml(i,false)).join('')}
+      ${g.items.length>3?`<button class="more" onclick="H.open['${esc(g.key)}']=${!open};renderHist()">${open?'閉じる':'残り'+(g.items.length-3)+'件を表示'}</button>`:''}</div>`;
+  }).join('');
+}
+
+/* ===== v4：修正・キャンセルの送信 ===== */
+let busyChange=false;
+async function sendChange(obj,btn,label){
+  obj.cid=newSendId();obj.key=lsGet(LS_KEYWORD);
+  busyChange=true;btn.textContent='送信中…';btn.classList.add('wait');
+  postForm(obj);
+  const t0=Date.now();let res=null;
+  await new Promise(r=>setTimeout(r,2000));
+  while(Date.now()-t0<45000){
+    try{const r=await jsonp(GAS_URL+'?action=status&cid='+encodeURIComponent(obj.cid));if(r&&r.result){res=r.result;break;}}catch(e){}
+    await new Promise(r=>setTimeout(r,2500));
+  }
+  busyChange=false;btn.textContent=label;btn.classList.remove('wait');
+  return res;
+}
+function resultMsg(res,word){
+  if(!res)return {ok:false,html:`届いたことを確認できませんでした。「最新にする」で履歴を確認し、反映されていなければもう一度行うか、ミートチームへ電話してください。`};
+  if(res.error==='key'){lsSet(LS_KEYWORD,'');showGate('合言葉を入力してください');return {ok:false,html:'合言葉を確認してください。'};}
+  const sk=(res.skipped||[]).map(s=>{const it=hFind(s.order);return `・${it?mdLabel(it.date):s.order}：${s.reason}`;});
+  if(!sk.length)return {ok:true,html:''};
+  return {ok:false,html:(res.done&&res.done.length?`${res.done.length}件を${word}しました。次の分はできませんでした。\n`:`${word}できませんでした。\n`)+sk.join('\n')+'\n必要な場合はミートチームへ電話してください。'};
+}
+
+/* --- 修正 --- */
+let ed=null;
+function openEdit(order){
+  const it=hFind(order);if(!it)return;
+  const after=siblings(it).filter(i=>i.state!=='取消'&&i.date>=it.date&&i.date>=H.today);
+  ed={it,after,scope:'one',items:it.meats.map(m=>Object.assign({},m)),date:it.date,time:it.time||'',memo:it.memo||'',by:st.sender||'',grade:'GP'};
+  $('edit-date').value=ed.date;$('edit-date').min=todayStr();
+  $('edit-time').value=ed.time?(ed.time.length===4?'0'+ed.time:ed.time):'';$('edit-memo').value=ed.memo;
+  renderEdit();
+  $('ov').classList.add('show');$('edit').classList.add('show');
+}
+function edOrig(m){return ed.it.meats.find(o=>o.grade===m.grade&&o.name===m.name&&o.unit===m.unit);}
+function edLate(){return !ed.it.canIncrease;}
+function edDiff(){
+  const lines=[],o=ed.it;let inc=false;
+  ed.items.forEach(m=>{const w=edOrig(m),lb=(m.grade==='その他'?'':m.grade+' ')+m.name;
+    if(!w){if(m.qty>0){lines.push(`＋ ${lb} ${m.qty}${m.unit}（追加）`);inc=true;}}
+    else if(w.qty!==m.qty){lines.push(m.qty>0?`${lb} ${w.qty}${w.unit} → ${m.qty}${m.unit}`:`－ ${lb}（外す）`);if(m.qty>w.qty)inc=true;}});
+  o.meats.forEach(w=>{if(!ed.items.some(m=>m.grade===w.grade&&m.name===w.name&&m.unit===w.unit))lines.push(`－ ${(w.grade==='その他'?'':w.grade+' ')+w.name}（外す）`);});
+  if(ed.scope==='one'){
+    if(ed.date!==o.date){lines.unshift(`出庫日 ${mdLabel(o.date)} → ${mdLabel(ed.date)}`);inc=true;}
+    if((ed.time||'')!==(o.time||''))lines.push(`出庫時刻 ${o.time||'—'} → ${ed.time||'—'}`);
+    if((ed.memo||'').trim()!==(o.memo||''))lines.push('備考を変更');
+  }
+  return {lines,inc};
+}
+function renderEdit(skipList){
+  const it=ed.it,late=edLate();
+  $('edit-t').textContent='発注の修正';
+  $('edit-lead').textContent=`${it.customer}｜${mdLabel(it.date)}${it.time?' '+it.time:''}｜${it.order}`;
+  const multi=ed.after.length>1;
+  $('edit-scope-w').hidden=!multi;
+  if(multi)$('edit-scope').innerHTML=`<button class="${ed.scope==='one'?'on':''}" onclick="ed.scope='one';renderEdit()">この日だけ</button><button class="${ed.scope==='after'?'on':''}" onclick="ed.scope='after';renderEdit()">この日以降すべて<small>${ed.after.length}件（〜${esc(mdLabel(ed.after[ed.after.length-1].date))}）</small></button>`;
+  $('edit-late').hidden=!late;
+  if(late)$('edit-late').textContent=`増量・品目の追加・日付の変更の期限（${untilLabel(it.increaseUntil)}）を過ぎています。減らす・外す・時刻と備考の変更だけできます。増やす場合はミートチームへ電話してください。`;
+  if(!skipList){
+    $('edit-items').innerHTML=ed.items.map((m,i)=>{const w=edOrig(m),max=late?(w?w.qty:0):MAX_QTY;
+      return `<div class="ed-item"><span class="nm"><span class="gtag ${m.grade==='その他'?'etc':m.grade}">${esc(m.grade)}</span>${esc(m.name)}${w&&w.qty!==m.qty?`<span class="was">元 ${w.qty}</span>`:''}${!w?'<span class="was">追加</span>':''}</span>
+        <div class="stp"><button onclick="edStep(${i},-1)" aria-label="減らす">−</button><input type="number" inputmode="numeric" value="${m.qty}" min="0" max="${max}" oninput="edType(${i},this)" aria-label="${esc(m.name)}の数量"><button onclick="edStep(${i},1)" ${m.qty>=max?'disabled style="opacity:.3"':''} aria-label="増やす">＋</button></div>
+        <span class="u">${esc(m.unit)}</span><button class="del" onclick="edDel(${i})" aria-label="外す"><svg viewBox="0 0 24 24"><use href="#i-x"/></svg></button></div>`;}).join('')||'<div class="empty" style="border:0">原料がありません（すべて外す場合はキャンセルをご利用ください）</div>';
+    $('edit-add-w').hidden=late;
+    if(!late){
+      $('edit-grade').innerHTML=['GP','SGP','その他'].map(g=>`<button class="${ed.grade===g?'on':''}" onclick="ed.grade='${g}';renderEdit()">${g}</button>`).join('');
+      $('edit-add').innerHTML=ed.grade==='その他'
+        ?'<div class="row" style="width:100%"><input class="inp" id="edit-etc" placeholder="品目名（例：ネック）" maxlength="30" style="height:40px"><button class="btn-s" style="height:40px" onclick="edAddEtc()">追加</button></div>'
+        :CUTS.filter(n=>!ed.items.some(m=>m.grade===ed.grade&&m.name===n)).map(n=>`<button class="chip" onclick="edAdd('${n}')">＋ ${n}</button>`).join('');
+    }
+  }
+  $('edit-dt').hidden=ed.scope!=='one';
+  $('edit-date').disabled=late;
+  $('edit-by').innerHTML=cfg.senders.map((s,i)=>`<button class="chip${s===ed.by?' on':''}" onclick="ed.by=cfg.senders[${i}];renderEdit(true)">${esc(s)}</button>`).join('')||'<div class="empty" style="width:100%">≡メニューから送信者を追加してください</div>';
+  const df=edDiff();
+  const empty=!ed.items.some(m=>m.qty>0);
+  let msg=df.lines.length?'変更点\n'+df.lines.join('\n'):'まだ変更がありません';
+  if(ed.scope==='after'&&df.lines.length)msg+=`\n\n対象：${ed.after.length}件（${mdLabel(ed.after[0].date)}〜${mdLabel(ed.after[ed.after.length-1].date)}）\n※ 変更した原料の数量を各日にそろえます。期限を過ぎた日は変更されません。`;
+  if(df.inc&&it.requested)msg+='\n\n※ ミートチームはすでに確保に動いています。増量・追加はミートチームに再確認の通知が届きます。';
+  $('edit-diff').textContent=empty?'原料がすべて0です。すべて取りやめる場合は「キャンセル」をご利用ください。':msg;
+  const ok=df.lines.length&&ed.by&&!empty;
+  $('edit-go').classList.toggle('wait',!ok);
+}
+function edStep(i,d){const m=ed.items[i],w=edOrig(m),max=edLate()?(w?w.qty:0):MAX_QTY;m.qty=Math.max(0,Math.min(max,m.qty+d));renderEdit();}
+function edType(i,el){el.value=el.value.replace(/[^0-9]/g,'');if(el.value==='')return;const m=ed.items[i],w=edOrig(m),max=edLate()?(w?w.qty:0):MAX_QTY;m.qty=Math.max(0,Math.min(max,parseInt(el.value,10)||0));if(String(m.qty)!==el.value)el.value=m.qty;renderEdit(true);}
+function edDel(i){ed.items.splice(i,1);renderEdit();}
+function edAdd(n){if(ed.items.length>=MAX_ITEMS){toast(`原料は最大${MAX_ITEMS}種類までです`);return;}ed.items.push({grade:ed.grade,name:n,qty:1,unit:unitOf(n)});renderEdit();}
+function edAddEtc(){const el=$('edit-etc'),n=el.value.trim();if(!n)return;if(ed.items.some(m=>m.grade==='その他'&&m.name===n)){toast('同じ品目があります');return;}ed.items.push({grade:'その他',name:n,qty:1,unit:'枚'});renderEdit();}
+async function sendEdit(){
+  const df=edDiff();
+  if(!df.lines.length){toast('変更がありません');return;}
+  if(!ed.by){toast('修正する人を選んでください');return;}
+  if(!ed.items.some(m=>m.qty>0)){toast('すべて取りやめる場合はキャンセルをご利用ください');return;}
+  let obj;
+  if(ed.scope==='after'){
+    const patch=[];
+    ed.items.forEach(m=>{const w=edOrig(m);if(!w||w.qty!==m.qty)patch.push(m);});
+    ed.it.meats.forEach(w=>{if(!ed.items.some(m=>m.grade===w.grade&&m.name===w.name&&m.unit===w.unit))patch.push(Object.assign({},w,{qty:0}));});
+    obj={action:'update',kind:'patch',orders:ed.after.map(i=>i.order),items:patch,by:ed.by};
+  }else{
+    obj={action:'update',kind:'replace',orders:[ed.it.order],items:ed.items.filter(m=>m.qty>0),date:ed.date,time:ed.time,memo:(ed.memo||'').trim(),by:ed.by};
+  }
+  lsSet(LS_SENDER,ed.by);
+  const res=await sendChange(obj,$('edit-go'),'修正を送信');
+  const r=resultMsg(res,'修正');
+  if(r.ok){closeAll();toast('修正しました。ミートチームに通知しました');}
+  else{$('edit-diff').textContent=r.html;}
+  loadHist();
+}
+
+/* --- キャンセル --- */
+let cx=null;
+function openCancel(order){
+  const it=hFind(order);if(!it)return;
+  const after=siblings(it).filter(i=>i.state!=='取消'&&i.date>=it.date&&i.canCancel);
+  cx={it,after,scope:'one',by:st.sender||''};
+  $('cxl-reason').value='';
+  renderCancel();
+  $('ov').classList.add('show');$('cxl').classList.add('show');
+}
+function renderCancel(){
+  const it=cx.it,list=cx.scope==='after'?cx.after:[it];
+  $('cxl-lead').textContent=`${it.customer}｜${it.order}`;
+  const multi=cx.after.length>1;
+  $('cxl-scope-w').hidden=!multi;
+  if(multi)$('cxl-scope').innerHTML=`<button class="${cx.scope==='one'?'on':''}" onclick="cx.scope='one';renderCancel()">この日だけ</button><button class="${cx.scope==='after'?'on':''}" onclick="cx.scope='after';renderCancel()">この日以降すべて<small>${cx.after.length}件</small></button>`;
+  $('cxl-dl').innerHTML=`<dt>キャンセル<br>${list.length}件</dt><dd><ul>${list.map(i=>`<li><span>${esc(mdLabel(i.date))}</span><span>${esc(meatsLine(i.meats))}</span></li>`).join('')}</ul>${list.some(i=>i.peaceful==='mail')?'<div class="warnbox">ピースフル様へ依頼済みの分があります。ミートチームからピースフル様へ連絡します。</div>':''}</dd>`;
+  $('cxl-by').innerHTML=cfg.senders.map((s,i)=>`<button class="chip${s===cx.by?' on':''}" onclick="cx.by=cfg.senders[${i}];renderCancel()">${esc(s)}</button>`).join('');
+  $('cxl-go').classList.toggle('wait',!cx.by);
+  $('cxl-go').textContent=list.length>1?`${list.length}件をキャンセルする`:'キャンセルする';
+}
+async function sendCancel(){
+  if(!cx.by){toast('キャンセルする人を選んでください');return;}
+  const list=cx.scope==='after'?cx.after:[cx.it];
+  lsSet(LS_SENDER,cx.by);
+  const label=$('cxl-go').textContent;
+  const res=await sendChange({action:'cancel',orders:list.map(i=>i.order),reason:$('cxl-reason').value.trim(),by:cx.by},$('cxl-go'),label);
+  const r=resultMsg(res,'キャンセル');
+  if(r.ok){closeAll();toast('キャンセルしました。ミートチームに通知しました');}
+  else{$('cxl-dl').innerHTML=`<dt>結果</dt><dd style="white-space:pre-wrap">${esc(r.html)}</dd>`;}
+  loadHist();
+}
 
 /* ===== 起動 ===== */
 (function init(){
@@ -957,6 +1538,9 @@ function resetCfg(){if(!confirm('卸先・担当者・格納先を初期設定�
   const t=new Date();$('f-date').min=`${t.getFullYear()}-${p2(t.getMonth()+1)}-${p2(t.getDate())}`;
   $('etc-name').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addEtc();}});
   $('add-staff').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addStaff();}});
+  $('add-sender').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addSender();}});
+  $('gate-key').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();tryKey();}});
+  if(lsGet(LS_LOCK)==='1')setLock(true);
   $('add-cust-kana').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addCustomer();}});
   $('add-cust-name').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addCustomer();}});
   window.addEventListener('beforeunload',e=>{if(dirty&&!sending){e.preventDefault();e.returnValue='';}});
