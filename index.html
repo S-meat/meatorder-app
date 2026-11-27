@@ -148,6 +148,11 @@ input[type=date].inp,input[type=time].inp{font-variant-numeric:tabular-nums}
 .row .inp{flex:1}
 .btn-s{height:48px;padding:0 20px;border-radius:var(--r2);background:var(--ink);color:#fff;font-weight:700;font-size:14px;flex:none;letter-spacing:.04em}
 .btn-s:active{transform:scale(.97)}
+.dbox{position:relative;display:flex;gap:6px;min-width:0}.dbox .inp{flex:1;min-width:0;letter-spacing:.04em}
+.dcal{flex:none;width:48px;height:48px;border:1px solid var(--line2);border-radius:var(--r2);background:#fff;display:grid;place-items:center;color:var(--ink)}
+.dcal:disabled{opacity:.4}
+.dpick{position:absolute;right:0;bottom:0;width:48px;height:48px;opacity:0;pointer-events:none;border:0;padding:0}
+.date-note.err{color:#c62828}
 .date-note{font-size:13px;font-weight:700;margin-top:8px;min-height:1.6em;font-variant-numeric:tabular-nums}
 
 /* ---------- selected meats ---------- */
@@ -576,7 +581,7 @@ body.hist .steps{display:none}
 
       <div id="single-date">
         <div class="sub">出庫日 <span class="tag-req">必須</span></div>
-        <input class="inp" type="date" id="f-date" onchange="setDate(this.value)" aria-label="出庫日">
+        <div class="dbox"><input class="inp tnum" type="text" inputmode="numeric" autocomplete="off" maxlength="10" id="f-date" placeholder="例 20261130" oninput="dtType(this)" onblur="dtCommit(this)" onkeydown="if(event.key==='Enter')this.blur()" aria-label="出庫日（年月日を続けて入力）"><button type="button" class="dcal" id="f-date-btn" onclick="dtPick('f-date')" aria-label="カレンダーから選ぶ"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button><input type="date" class="dpick" id="f-date-pick" tabindex="-1" aria-hidden="true" onchange="dtPicked('f-date',this.value)"></div>
         <div class="date-note" id="date-note"></div>
         <p class="hint" style="margin-top:2px">原則として<b>納品日の前日</b>です。</p>
       </div>
@@ -633,7 +638,7 @@ body.hist .steps{display:none}
   </aside>
   </div><!-- /layout -->
 </div>
-<div class="foot"><button onclick="openHelp()">使い方</button><span>／</span><button onclick="openDrawer()">設定（卸先・担当者）</button><span>／</span><span>v4.0</span></div>
+<div class="foot"><button onclick="openHelp()">使い方</button><span>／</span><button onclick="openDrawer()">設定（卸先・担当者）</button><span>／</span><span>v4.1</span></div>
 </main>
 
 <!-- 送信履歴 -->
@@ -652,7 +657,7 @@ body.hist .steps{display:none}
   <div class="hnote"><span id="h-info"></span><button onclick="loadHist()">最新にする</button></div>
   <div id="h-list"></div>
 </div>
-<div class="foot"><button onclick="openHelp()">使い方</button><span>／</span><span>v4.0</span></div>
+<div class="foot"><button onclick="openHelp()">使い方</button><span>／</span><span>v4.1</span></div>
 </main>
 
 <!-- 完了画面 -->
@@ -772,7 +777,7 @@ body.hist .steps{display:none}
   </div>
   <div id="edit-dt">
     <div class="sub">出庫日・時刻</div>
-    <div class="row"><input class="inp" type="date" id="edit-date" onchange="ed.date=this.value;renderEdit()" aria-label="出庫日"><input class="inp" type="time" id="edit-time" step="300" style="max-width:140px" onchange="ed.time=this.value.replace(/^0/,'');renderEdit()" aria-label="出庫時刻"></div>
+    <div class="row"><div class="dbox" style="flex:1"><input class="inp tnum" type="text" inputmode="numeric" autocomplete="off" maxlength="10" id="edit-date" placeholder="例 20261130" oninput="dtType(this)" onblur="dtCommit(this)" onkeydown="if(event.key==='Enter')this.blur()" aria-label="出庫日（年月日を続けて入力）"><button type="button" class="dcal" id="edit-date-btn" onclick="dtPick('edit-date')" aria-label="カレンダーから選ぶ"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button><input type="date" class="dpick" id="edit-date-pick" tabindex="-1" aria-hidden="true" onchange="dtPicked('edit-date',this.value)"></div><input class="inp" type="time" id="edit-time" step="300" style="max-width:140px" onchange="ed.time=this.value.replace(/^0/,'');renderEdit()" aria-label="出庫時刻"></div><div class="date-note" id="edit-date-note"></div>
     <div class="sub">備考</div>
     <textarea class="inp" id="edit-memo" maxlength="300" style="min-height:64px" oninput="ed.memo=this.value;renderEdit(true)"></textarea>
   </div>
@@ -986,7 +991,49 @@ function setUnit(i,u){const m=st.meats[i];if(!m)return;m.u=u;renderSel();refresh
 function delMeat(i){st.meats.splice(i,1);renderGrade();renderSel();refresh();}
 
 /* ===== 3 出庫・確認 ===== */
-function setDate(v){st.date=v;$('date-note').textContent=v?fmtDate(v):'';dirty=true;refresh();}
+function setDate(v){st.date=v;const n=$('date-note');n.classList.remove('err');n.textContent=v?fmtDate(v):'';dirty=true;refresh();}
+/* --- 出庫日入力：数字を続けて打つと YYYY/MM/DD に自動で区切る --- */
+const DT_CB={'f-date':v=>setDate(v),'edit-date':v=>{ed.date=v||ed.it.date;renderEdit();}};
+const DT_NOTE={'f-date':'date-note','edit-date':'edit-date-note'};
+function dtFmtDigits(d){d=d.slice(0,8);return d.length<=4?d:d.length<=6?d.slice(0,4)+'/'+d.slice(4):d.slice(0,4)+'/'+d.slice(4,6)+'/'+d.slice(6);}
+function dtType(el){
+  const raw=el.value,parts=raw.split(/[^\d]+/);
+  // 数字だけ（または自動で入れた区切りどおり）のときだけ整形。2026/1/5 のような手入力の区切りはそのまま残す
+  const auto=parts.every((p,i)=>i===parts.length-1||p.length===(i===0?4:2));
+  if(auto){const f=dtFmtDigits(raw.replace(/\D/g,''));if(f!==raw)el.value=f;}
+  if(el.value.replace(/\D/g,'').length===8&&auto)dtCommit(el);
+  else{const n=$(DT_NOTE[el.id]);if(n&&n.classList.contains('err')){n.classList.remove('err');n.textContent='';}}
+}
+function dtParse(raw){
+  const t=new Date(),ps=raw.trim().split(/[^\d]+/).filter(Boolean);let y,m,d;
+  if(ps.length===1){const g=ps[0];
+    if(g.length===8){y=+g.slice(0,4);m=+g.slice(4,6);d=+g.slice(6);}
+    else if(g.length===4||g.length===3){m=+g.slice(0,g.length-2);d=+g.slice(-2);}
+    else return null;}
+  else if(ps.length===3){y=+ps[0];m=+ps[1];d=+ps[2];if(y<100)y+=2000;}
+  else if(ps.length===2){m=+ps[0];d=+ps[1];}
+  else return null;
+  if(y===undefined){y=t.getFullYear();const c=new Date(y,m-1,d);if(c<new Date(t.getFullYear(),t.getMonth(),t.getDate()))y++;}
+  const dt=new Date(y,m-1,d);
+  if(!m||!d||dt.getFullYear()!==y||dt.getMonth()!==m-1||dt.getDate()!==d)return null;
+  return `${y}-${p2(m)}-${p2(d)}`;
+}
+function dtCommit(el){
+  const id=el.id,n=$(DT_NOTE[id]),raw=el.value.trim();
+  if(!raw){if(n){n.classList.remove('err');n.textContent='';}DT_CB[id]('');return;}
+  const v=dtParse(raw),min=$(id+'-pick').min;
+  if(!v||(min&&v<min)){
+    DT_CB[id]('');
+    if(n){n.classList.add('err');n.textContent=!v?'日付として読み取れません（例：20261130）':'過去の日付は選べません';}
+    return;
+  }
+  el.value=v.replace(/-/g,'/');$(id+'-pick').value=v;DT_CB[id](v);
+}
+function dtSet(id,v){$(id).value=v?v.replace(/-/g,'/'):'';$(id+'-pick').value=v||'';}
+function dtMin(id,v){$(id+'-pick').min=v;}
+function dtDisable(id,b){$(id).disabled=b;$(id+'-btn').disabled=b;}
+function dtPick(id){const p=$(id+'-pick');try{if(p.showPicker){p.showPicker();return;}}catch(e){}p.style.pointerEvents='auto';p.focus();p.click();p.style.pointerEvents='';}
+function dtPicked(id,v){if(!v)return;$(id).value=v.replace(/-/g,'/');dtCommit($(id));}
 function renderTimes(){
   $('time-chips').innerHTML=TIMES.map(t=>{const v=p2(t.split(':')[0])+':00';const on=!st.timeOther&&st.time===v;
     return `<button class="chip${on?' on':''}" aria-pressed="${on}" onclick="setTime('${v}')">${t}</button>`;}).join('')
@@ -1138,7 +1185,7 @@ function resetAll(){
   st=fresh();tried=false;dirty=false;
   ['new-name','new-contact','etc-name','f-date','f-time','f-memo'].forEach(id=>$(id).value='');
   if($('cust-q'))$('cust-q').value='';
-  $('f-pdf').checked=false;$('pdf-check').classList.remove('on');$('date-note').textContent='';
+  $('f-pdf').checked=false;$('pdf-check').classList.remove('on');$('date-note').textContent='';$('date-note').classList.remove('err');$('f-date-pick').value='';
   ['c1','c2','c3'].forEach(id=>$(id).classList.remove('err'));
   setMode('ex');setApv(null);setInMode('single');dirty=false;
   $('done').classList.remove('show');$('app').hidden=false;$('bar').hidden=false;
@@ -1418,7 +1465,7 @@ function openEdit(order){
   const it=hFind(order);if(!it)return;
   const after=siblings(it).filter(i=>i.state!=='取消'&&i.date>=it.date&&i.date>=H.today);
   ed={it,after,scope:'one',items:it.meats.map(m=>Object.assign({},m)),date:it.date,time:it.time||'',memo:it.memo||'',by:st.sender||'',grade:'GP'};
-  $('edit-date').value=ed.date;$('edit-date').min=todayStr();
+  dtSet('edit-date',ed.date);dtMin('edit-date',todayStr());$('edit-date-note').textContent='';$('edit-date-note').classList.remove('err');
   $('edit-time').value=ed.time?(ed.time.length===4?'0'+ed.time:ed.time):'';$('edit-memo').value=ed.memo;
   renderEdit();
   $('ov').classList.add('show');$('edit').classList.add('show');
@@ -1461,7 +1508,7 @@ function renderEdit(skipList){
     }
   }
   $('edit-dt').hidden=ed.scope!=='one';
-  $('edit-date').disabled=late;
+  dtDisable('edit-date',late);
   $('edit-by').innerHTML=cfg.senders.map((s,i)=>`<button class="chip${s===ed.by?' on':''}" onclick="ed.by=cfg.senders[${i}];renderEdit(true)">${esc(s)}</button>`).join('')||'<div class="empty" style="width:100%">≡メニューから送信者を追加してください</div>';
   const df=edDiff();
   const empty=!ed.items.some(m=>m.qty>0);
@@ -1535,7 +1582,7 @@ async function sendCancel(){
 /* ===== 起動 ===== */
 (function init(){
   if(IS_DEMO)$('demo').hidden=false;
-  const t=new Date();$('f-date').min=`${t.getFullYear()}-${p2(t.getMonth()+1)}-${p2(t.getDate())}`;
+  const t=new Date();dtMin('f-date',`${t.getFullYear()}-${p2(t.getMonth()+1)}-${p2(t.getDate())}`);
   $('etc-name').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addEtc();}});
   $('add-staff').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addStaff();}});
   $('add-sender').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addSender();}});
