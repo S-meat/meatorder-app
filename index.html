@@ -550,7 +550,7 @@ body.hist .steps{display:none}
           <p class="imp-d">いなげや様などの月間発注表を選ぶと、卸先・原料・出庫日・数量を自動で入力します。<br>表の日付は<b>納品日</b>として読み、出庫日は<b>その前日</b>にします。</p>
           <button class="btn" type="button" onclick="$('imp-file').click()">ファイルを選ぶ</button>
           <input type="file" id="imp-file" accept="application/pdf,image/*" hidden onchange="impFile(this)">
-          <p class="imp-s">読み取りには20秒ほどかかります。送信前に内容を確認・修正できます。</p>
+          <p class="imp-s">読み取りには20秒〜1分ほどかかります。送信前に内容を確認・修正できます。</p>
         </div>
       </div>
       <div class="imp-done" id="imp-done" hidden></div>
@@ -981,7 +981,9 @@ async function impFile(el){
     const cid=newSendId();
     postForm({action:'parse',cid,key:lsGet(LS_KEYWORD),file:{name:file.name,mime,b64}});
     const t0=Date.now();await new Promise(r=>setTimeout(r,8000));
-    while(Date.now()-t0<100000){
+    const wmsg=$('imp-body').querySelector('small');
+    while(Date.now()-t0<240000){
+      if(wmsg&&Date.now()-t0>45000)wmsg.textContent='混み合っているようです。もう少しお待ちください（最大4分）';
       try{const r=await jsonp(GAS_URL+'?action=status&cid='+encodeURIComponent(cid));if(r&&r.result){res=r.result;break;}}catch(e){}
       await new Promise(r=>setTimeout(r,3000));
     }
