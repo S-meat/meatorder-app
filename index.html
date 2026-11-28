@@ -165,6 +165,8 @@ input[type=date].inp,input[type=time].inp{font-variant-numeric:tabular-nums}
 .imp-tbl tr.off td{color:var(--mute2);text-decoration:line-through}
 .imp-tbl .ar{color:var(--mute);padding:7px 0}
 .imp-warn{font-size:12.5px;color:#c62828;margin-top:6px;line-height:1.6}
+.imp-chk{color:#c62828;font-weight:700}.imp-chk small{font-weight:400;font-size:11px}
+#mgrid input.chk{outline:2px solid #c62828;outline-offset:-2px}
 .imp-wait{text-align:center;padding:30px 0;font-size:14px}
 .date-note{font-size:13px;font-weight:700;margin-top:8px;min-height:1.6em;font-variant-numeric:tabular-nums}
 
@@ -663,7 +665,7 @@ body.hist .steps{display:none}
   </aside>
   </div><!-- /layout -->
 </div>
-<div class="foot"><button onclick="openHelp()">使い方</button><span>／</span><button onclick="openDrawer()">設定（卸先・担当者）</button><span>／</span><span>v4.2</span></div>
+<div class="foot"><button onclick="openHelp()">使い方</button><span>／</span><button onclick="openDrawer()">設定（卸先・担当者）</button><span>／</span><span>v4.3</span></div>
 </main>
 
 <!-- 送信履歴 -->
@@ -682,7 +684,7 @@ body.hist .steps{display:none}
   <div class="hnote"><span id="h-info"></span><button onclick="loadHist()">最新にする</button></div>
   <div id="h-list"></div>
 </div>
-<div class="foot"><button onclick="openHelp()">使い方</button><span>／</span><span>v4.2</span></div>
+<div class="foot"><button onclick="openHelp()">使い方</button><span>／</span><span>v4.3</span></div>
 </main>
 
 <!-- 完了画面 -->
@@ -953,7 +955,7 @@ function setMode(m){
   dirty=true;refresh();
 }
 /* --- 月間発注：発注書（PDF・写真）を読み取って入力 --- */
-let imp=null,impBusy=false;
+let imp=null,impBusy=false,impChk={};
 function openImpTab(){
   $('m-ex').classList.remove('on');$('m-new').classList.remove('on');$('m-imp').classList.add('on');
   $('p-ex').hidden=true;$('p-new').hidden=true;$('p-imp').hidden=false;$('pdf-block').hidden=true;
@@ -998,7 +1000,7 @@ function impBuild(r,fname){
   const td=todayStr();
   const rows=r.deliveries.map(x=>{const ship=shipOf(x.date);return {deliv:x.date,ship,items:x.items,off:ship<td};});
   const live=rows.filter(x=>!x.off);
-  const names=[];live.forEach(x=>x.items.forEach(i=>{if(!names.includes(i.name))names.push(i.name);}));
+  const names=[];live.forEach(x=>x.items.forEach(i=>{if(!names.includes(i.name)&&(i.qty>0||i.alt>0))names.push(i.name);}));
   return {r,fname,rows,live:live.slice(0,31),names:names.slice(0,MAX_ITEMS),cust:cfg.customers.find(c=>c.id===r.customerId)||null};
 }
 function impRender(){
@@ -1006,7 +1008,9 @@ function impRender(){
   let h=`<div class="sub" style="margin-top:6px">卸先</div><div>${cust?`<b>${esc(cust.name)}</b>`:`<b>${esc(r.customer||'（読み取れず）')}</b><div class="imp-warn">いつもの取引先に見つかりません。入力後に「01 卸先」で選んでください。</div>`}</div>`;
   h+=`<div class="sub">原料（GP）</div><div>${names.map(n=>esc(n)+(CUTS.includes(n)?'':'（その他）')).join('・')||'—'}</div>`;
   h+=`<div class="sub">出庫日と数量 <span style="font-weight:400;color:var(--mute)">${live.length}日</span></div><table class="imp-tbl"><tr><th>納品日</th><th></th><th>出庫日</th><th>数量</th></tr>`;
-  h+=rows.map(x=>`<tr class="${x.off?'off':''}"><td>${mdLabel(x.deliv)}</td><td class="ar">→</td><td><b>${mdLabel(x.ship)}</b></td><td>${x.items.map(i=>esc(i.name)+' '+i.qty).join('<br>')}</td></tr>`).join('')+'</table>';
+  h+=rows.map(x=>`<tr class="${x.off?'off':''}"><td>${mdLabel(x.deliv)}</td><td class="ar">→</td><td><b>${mdLabel(x.ship)}</b></td><td>${x.items.map(i=>i.check?`<span class="imp-chk">${esc(i.name)} ${i.qty}？<small>（もう一方の読み：${i.alt}）</small></span>`:esc(i.name)+' '+i.qty).join('<br>')}</td></tr>`).join('')+'</table>';
+  if(r.flagged)h+=`<div class="imp-warn"><b>赤字の${r.flagged}か所</b>は、2通りの読み方で結果が食い違いました。必ず元の発注書で確認し、入力後に「03」の表で直してください。</div>`;
+  else if(r.checked)h+='<div style="font-size:12.5px;color:var(--mute);margin-top:6px">2通りの読み方で照合し、食い違いはありませんでした。</div>';
   if(rows.some(x=>x.off))h+='<div class="imp-warn">取り消し線の日は出庫日が過ぎているため入力しません。</div>';
   if(r.notes)h+=`<div class="sub">欄外の連絡事項（備考に入れます）</div><div style="font-size:13px;line-height:1.7">${esc(r.notes)}</div>`;
   if(r.apv)h+=`<div class="sub">APV入力</div><div>${esc(r.apv)}</div>`;
@@ -1023,12 +1027,14 @@ function impApply(){
   st.meats=names.map(n=>CUTS.includes(n)?{g:'GP',n,q:1,u:unitOf(n)}:{g:'その他',n,q:1,u:'枚'});
   setInMode('monthly');
   st.mdates=live.map(x=>x.ship);st.mq={};st.mtouched={};
-  live.forEach(x=>{st.mq[x.ship]={};st.meats.forEach(m=>{const it=x.items.find(i=>i.name===m.n),k=mkey(m);st.mq[x.ship][k]=it?it.qty:0;st.mtouched[x.ship+'|'+k]=true;});});
+  impChk={};
+  live.forEach(x=>{st.mq[x.ship]={};st.meats.forEach(m=>{const it=x.items.find(i=>i.name===m.n),k=mkey(m);st.mq[x.ship][k]=it?it.qty:0;st.mtouched[x.ship+'|'+k]=true;if(it&&it.check)impChk[x.ship+'|'+k]=true;});});
   const f=live[0].ship.split('-');st.mview={y:+f[0],m:+f[1]-1};
   if(r.apv)setApv(r.apv);
   if(r.notes){const add='【発注書より】'+r.notes;if(!st.memo.includes(add)){st.memo=(st.memo?st.memo+'\n':'')+add;st.memo=st.memo.slice(0,300);$('f-memo').value=st.memo;}}
   $('imp-done').hidden=false;
-  $('imp-done').innerHTML=`📄 <b>${esc(fname)}</b> を読み込みました（${live.length}日分）。<br>出庫時間・担当者を選び、内容を確認してから送信してください。`;
+  const nchk=Object.keys(impChk).length;
+  $('imp-done').innerHTML=`📄 <b>${esc(fname)}</b> を読み込みました（${live.length}日分）。<br>${nchk?`<b style="color:#c62828">赤枠の${nchk}マスは要確認</b>です。発注書と見比べてください。<br>`:''}出庫時間・担当者を選び、内容を確認してから送信してください。`;
   dirty=true;renderCustomers();renderGrade();renderSel();renderMcal();renderMgrid();refresh();
   setTimeout(()=>$(cust?'c3':'c1').scrollIntoView({behavior:'smooth',block:'start'}),200);
   toast(cust?'発注書の内容を入力しました':'卸先を選んでください');
@@ -1297,7 +1303,7 @@ function resetAll(){
   st=fresh();tried=false;dirty=false;
   ['new-name','new-contact','etc-name','f-date','f-time','f-memo'].forEach(id=>$(id).value='');
   if($('cust-q'))$('cust-q').value='';
-  $('imp-done').hidden=true;imp=null;$('f-pdf').checked=false;$('pdf-check').classList.remove('on');$('date-note').textContent='';$('date-note').classList.remove('err');$('f-date-pick').value='';
+  $('imp-done').hidden=true;imp=null;impChk={};$('f-pdf').checked=false;$('pdf-check').classList.remove('on');$('date-note').textContent='';$('date-note').classList.remove('err');$('f-date-pick').value='';
   ['c1','c2','c3'].forEach(id=>$(id).classList.remove('err'));
   setMode('ex');setApv(null);setInMode('single');dirty=false;
   $('done').classList.remove('show');$('app').hidden=false;$('bar').hidden=false;
@@ -1430,7 +1436,7 @@ function renderMgrid(){
   st.mdates.forEach(d=>{
     const ra=reqAt(d);
     h+=`<tr><td class="dl">${mdLabel(d)}<span class="rq">${now>=ra?'送信後すぐ確保依頼':'確保依頼 '+untilLabel(ra)}</span></td>`+st.meats.map(m=>{const k=mkey(m),q=st.mq[d][k];
-      return `<td><input type="number" inputmode="numeric" min="0" max="${MAX_QTY}" value="${q}" class="${q?'':'zero'}" aria-label="${esc(mdLabel(d)+' '+m.n)}" data-d="${d}" data-k="${esc(k)}" oninput="setMQ(this)" onblur="this.value=st.mq[this.dataset.d][this.dataset.k]"></td>`;}).join('')+'</tr>';
+      return `<td><input type="number" inputmode="numeric" min="0" max="${MAX_QTY}" value="${q}" class="${q?'':'zero'}${impChk[d+'|'+k]?' chk':''}" aria-label="${esc(mdLabel(d)+' '+m.n)}" data-d="${d}" data-k="${esc(k)}" oninput="setMQ(this)" onblur="this.value=st.mq[this.dataset.d][this.dataset.k]"></td>`;}).join('')+'</tr>';
   });
   el.innerHTML=h+'</tbody></table></div>';
 }
@@ -1439,7 +1445,7 @@ function setMQ(el){
   const d=el.dataset.d,k=el.dataset.k;if(!st.mq[d])return;
   if(el.value==='')return;
   let v=Math.min(MAX_QTY,Math.max(0,parseInt(el.value,10)||0));
-  st.mq[d][k]=v;st.mtouched[d+'|'+k]=true;el.classList.toggle('zero',!v);dirty=true;refresh();
+  st.mq[d][k]=v;st.mtouched[d+'|'+k]=true;el.classList.toggle('zero',!v);if(impChk[d+'|'+k]){delete impChk[d+'|'+k];el.classList.remove('chk');}dirty=true;refresh();
 }
 function monthlyEntries(){
   return st.mdates.map(d=>({date:d,date_formatted:fmtDate(d),
